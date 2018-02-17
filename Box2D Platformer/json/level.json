@@ -1,0 +1,86 @@
+level = [
+  {"type": "playerSpawn", "x": 70,  "y": 50},
+
+  {"type": "checkpoint", "x": 100,  "y": 278, "width": 0.25, "height": 0.4},
+  {"type": "checkpoint", "x": 750,  "y": 328, "width": 0.25, "height": 0.4},
+  {"type": "checkpoint", "x": 1300,  "y": 445, "width": 0.25, "height": 0.4},
+  {"type": "checkpoint", "x": 1700,  "y": 87, "width": 0.25, "height": 0.4},
+
+  {"type": "floor", "x": 100,  "y": 230, "width": 1, "height": 0.05},
+  {"type": "floor", "x": 400,  "y": 150, "width": 1, "height": 0.05},
+  {"type": "floor", "x": 400,  "y": 300, "width": 1, "height": 0.05},
+  {"type": "floor", "x": 495,  "y": 400, "width": 2.05, "height": 0.05},
+  {"type": "floor", "x": 750,  "y": 280, "width": 0.5, "height": 0.05},
+  {"type": "floor", "x": 745,  "y": 220, "width": 0.25, "height": 0.05},
+  {"type": "floor", "x": 1050,  "y": 220, "width": 0.8, "height": 0.05},
+  {"type": "floor", "x": 1270,  "y": 400, "width": 2, "height": 0.05},
+  {"type": "floor", "x": 1530,  "y": 220, "width": 1.3, "height": 0.05},
+  {"type": "floor", "x": 1730,  "y": 450, "width": 0.6, "height": 0.05},
+  {"type": "floor", "x": 2000,  "y": 460, "width": 0.7, "height": 0.05},
+  {"type": "floor", "x": 2000,  "y": 360, "width": 0.7, "height": 0.05},
+  {"type": "floor", "x": 2000,  "y": 260, "width": 0.7, "height": 0.05},
+
+  {"type": "block", "x": 400,  "y": 95, "width": 1, "height": 0.5},
+  {"type": "block", "x": 295,  "y": 385, "width": 0.01, "height": 0.175},
+  {"type": "block", "x": 710,  "y": 225, "width": 0.1, "height": 1.8},
+  {"type": "block", "x": 40,  "y": 515, "width": 0.25, "height": 0.05},
+  {"type": "block", "x": 970,  "y": 435, "width": 0.05, "height": 1.45},
+  {"type": "block", "x": 1225,  "y": 220, "width": 0.05, "height": 1.75},
+  {"type": "block", "x": 1665,  "y": 400, "width": 0.05, "height": 1.85},
+  {"type": "block", "x": 1780,  "y": 400, "width": 0.05, "height": 0.5},
+  {"type": "block", "x": 1940,  "y": 190, "width": 0.05, "height": 0.7},
+
+  {"type": "bounce", "x": 600,  "y": 50, "width": 1, "height": 0.05},
+  {"type": "bounce", "x": 170,  "y": 350, "width": 0.6, "height": 0.05},
+  {"type": "bounce", "x": 1800,  "y": 50, "width": 0.6, "height": 0.05},
+
+  {"type": "box", "x": 140,  "y": 90, "width": 0.3, "height": 0.3},
+  {"type": "box", "x": 350,  "y": 350, "width": 0.3, "height": 0.3},
+  {"type": "box", "x": 1010,  "y": 250, "width": 0.3, "height": 0.3},
+  {"type": "box", "x": 1450,  "y": 450, "width": 0.3, "height": 0.3},
+  {"type": "box", "x": 1740,  "y": 400, "width": 0.3, "height": 0.3},
+
+  {"type": "ladder", "x": 25,  "y": 290, "width": 0.15, "height": 0.5},
+  {"type": "ladder", "x": 1200,  "y": 120, "width": 0.15, "height": 0.7},
+  {"type": "ladder", "x": 995,  "y": 400, "width": 0.15, "height": 0.9},
+
+  {"type": "spikes", "x": 400,  "y": 420, "width": 0.2, "height": 0.15},
+  {"type": "spikes", "x": 525,  "y": 420, "width": 0.2, "height": 0.15},
+  {"type": "spikes", "x": 650,  "y": 420, "width": 0.2, "height": 0.15},
+  {"type": "spikes", "x": 1530,  "y": 240, "width": 1.3, "height": 0.15},
+  {"type": "spikes", "x": 1360,  "y": 60, "width": 1.3, "height": 0.15},
+
+  {"type": "switch", "x": 40,  "y": 545, "width": 0.25, "height": 0.25, "id": 1},
+  {"type": "door", "x": 300,  "y": 490, "width": 0.1, "height": 0.90, "id": 1},
+
+  {"type": "switch", "x": 750,  "y": 250, "width": 0.25, "height": 0.25, "id": 2},
+  {"type": "door", "x": 1200,  "y": 490, "width": 0.1, "height": 0.90, "id": 2},
+
+  {"type": "switch", "x": 1260,  "y": 360, "width": 0.25, "height": 0.25, "id": 3},
+  {"type": "door", "x": 1660,  "y": 130, "width": 0.1, "height": 0.90, "id": 3},
+
+  {"type": "switch", "x": 1700,  "y": 485, "width": 0.25, "height": 0.25, "id": 4},
+  {"type": "door", "x": 1730,  "y": 350, "width": 0.6, "height": 0.1, "id": 4},
+
+  {"type": "switch", "x": 2030,  "y": 225, "width": 0.25, "height": 0.25, "id": 5},
+  {"type": "door", "x": 1940,  "y": 410, "width": 0.1, "height": 0.45, "id": 5},
+
+  {"type": "switch", "x": 2030,  "y": 390, "width": 0.25, "height": 0.25, "id": 6},
+  {"type": "door", "x": 1940,  "y": 520, "width": 0.1, "height": 0.55, "id": 6},
+
+  {"type": "switch", "x": 2030,  "y": 290, "width": 0.25, "height": 0.25, "id": 7},
+  {"type": "door", "x": 1980,  "y": 520, "width": 0.1, "height": 0.55, "id": 7},
+
+  {"type": "gem", "x": 400,  "y": 210, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 670,  "y": 370, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 400,  "y": 520, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 525,  "y": 520, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 650,  "y": 520, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 35,  "y": 480, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 935,  "y": 380, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 1190,  "y": 330, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 1630,  "y": 460, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 1260,  "y": 300, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 1970,  "y": 230, "width": 0.2, "height": 0.2},
+  {"type": "gem", "x": 1690,  "y": 400, "width": 0.15, "height": 0.15},
+];
