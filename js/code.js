@@ -378,27 +378,28 @@ function Draw ()
 
         // draw the player score
         ctx.fillStyle = "cyan";
-        ctx.font = "700 30px sans-serif";
-        ctx.fillText('Gems: ' + player.score, canvas.width * 0.85, 30);
+        ctx.font = "900 30px CaviarDreams";
+        ctx.fillText('Gems: ' + player.score, canvas.width * 0.87, 30);
 
         // draw the FPS
         ctx.fillStyle = "white";
-        ctx.font = "10px Arial";
+        ctx.font = "600 10px CaviarDreams";
         ctx.fillText('FPS: ' + FPS, 10, 10);
         ctx.fillText('deltaTime: ' + Math.round(1 / deltaTime), 10, 20);
 
         if(onPause)
         {
 
-            ctx.globalAlpha = 0.7;
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = "turquoise";
             ctx.fillRect(0,0,canvas.width, canvas.height);
             ctx.globalAlpha = 1.0;
 
             ctx.fillStyle = "black";
-            ctx.font = "700 40px sans-serif";
+            ctx.font = "700 40px CaviarDreams";
             ctx.fillText("Pause", canvas.width * 0.435, canvas.height * 0.3);
 
-            if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 100 && input.mouse.y > canvas.height * 0.5 - 30 && input.mouse.y  < canvas.height * 0.5 )
+            if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 75 && input.mouse.y > canvas.height * 0.5 - 30 && input.mouse.y  < canvas.height * 0.5 )
             {
                 ctx.fillStyle = "yellow";
             }
@@ -407,7 +408,7 @@ function Draw ()
                 ctx.fillStyle = "black";
             }
 
-            ctx.font = "700 30px sans-serif";
+            ctx.font = "700 30px CaviarDreams";
             ctx.fillText("Menu", canvas.width * 0.45, canvas.height * 0.5);
         }
 
@@ -416,21 +417,22 @@ function Draw ()
     else
     {
         ctx.restore();
-        console.log("bitag");
-        if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 100 && input.mouse.y > canvas.height * 0.5 - 30 && input.mouse.y  < canvas.height * 0.5 )
+
+        ctx.fillStyle = "white";
+        ctx.font = "700 70px CaviarDreams";
+        ctx.fillText("Said is a bitch ", canvas.width * 0.38, canvas.height * 0.2);
+
+        if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 65 && input.mouse.y > canvas.height * 0.5 - 30 && input.mouse.y  < canvas.height * 0.5 )
         {
-            ctx.fillStyle = "yellow";
+            ctx.fillStyle = "turquoise";
         }
         else {
             ctx.fillStyle = "white";
         }
 
-        ctx.font = "700 30px sans-serif";
+        ctx.font = "700 30px CaviarDreams";
         ctx.fillText("Play", canvas.width * 0.45, canvas.height * 0.5);
     }
-
-
-
 
 }
 

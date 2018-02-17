@@ -1,5 +1,5 @@
 level = [
-  {"type": "playerSpawn", "x": 70,  "y": 50},
+  {"type": "playerSpawn", "x": 70,  "y": 80},
 
   {"type": "checkpoint", "x": 100,  "y": 278, "width": 0.25, "height": 0.4},
   {"type": "checkpoint", "x": 750,  "y": 328, "width": 0.25, "height": 0.4},
