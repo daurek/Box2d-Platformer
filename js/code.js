@@ -420,7 +420,7 @@ function Draw ()
 
         ctx.fillStyle = "white";
         ctx.font = "700 70px CaviarDreams";
-        ctx.fillText("Said is a bitch ", canvas.width * 0.38, canvas.height * 0.2);
+        ctx.fillText("Skylight", canvas.width * 0.38, canvas.height * 0.2);
 
         if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 65 && input.mouse.y > canvas.height * 0.5 - 30 && input.mouse.y  < canvas.height * 0.5 )
         {
@@ -432,6 +432,17 @@ function Draw ()
 
         ctx.font = "700 30px CaviarDreams";
         ctx.fillText("Play", canvas.width * 0.45, canvas.height * 0.5);
+
+        if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 65 && input.mouse.y > canvas.height * 0.6 - 30 && input.mouse.y  < canvas.height * 0.6 )
+        {
+            ctx.fillStyle = "turquoise";
+        }
+        else {
+            ctx.fillStyle = "white";
+        }
+
+        ctx.font = "700 30px CaviarDreams";
+        ctx.fillText("Help", canvas.width * 0.45, canvas.height * 0.6);
     }
 
 }
