@@ -76,11 +76,16 @@ function MouseDown (event)
     //console.log("MouseDown: " + "X=" + clickX + ", Y=" + clickY);
     if(onMenu)
     {
-        if(clickX > canvas.width * 0.45 && clickX  < canvas.width * 0.45 + 100 && clickY > canvas.height * 0.5 - 30 && clickY  < canvas.height * 0.5 )
-        {
+
+        if (MouseCheck( canvas.width * 0.45, canvas.height * 0.5, 100, 30)) {
             onMenu = false;
             LoadGame();
         }
+        else if (MouseCheck( canvas.width * 0.45, canvas.height * 0.6, 100, 30)) {
+            onMenu = false;
+            onHelp = true;
+        }
+
     }
     else if (onPause)
     {
@@ -91,7 +96,14 @@ function MouseDown (event)
             ClearLevel ();
         }
     }
-
+    else if(onHelp)
+    {
+        if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30))
+        {
+            onMenu = true;
+            onHelp = false;
+        }
+    }
 }
 
 function MouseMove (event)
@@ -99,6 +111,9 @@ function MouseMove (event)
     var rect = canvas.getBoundingClientRect();
     input.mouse.x = event.clientX - rect.left;
     input.mouse.y = event.clientY - rect.top;
+}
 
-
+function MouseCheck(xPos, yPos, xSize, ySize)
+{
+    return input.mouse.x > xPos && input.mouse.x  < xPos + xSize && input.mouse.y > yPos - ySize && input.mouse.y  < yPos;
 }
