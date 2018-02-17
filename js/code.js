@@ -13,7 +13,7 @@ var time = 0,
     acumDelta = 0;
 
 // images references
-var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, doorImg, switchImg, flagImg, gemImg;
+var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, doorImg, switchImg, flagImg, gemImg, padImg;
 
 // game camera
 var camera;
@@ -32,6 +32,7 @@ var playerSpawn = {
 var reseting = false;
 var onMenu = true;
 var onPause = false;
+var onHelp = false;
 
 function Init ()
 {
@@ -81,6 +82,9 @@ function Init ()
 
         gemImg = new Image();
         gemImg.src = "./media/gem.png";
+
+        padImg = new Image();
+        padImg.src = "./media/pad.png";
 
         playerImg = new Image();
         playerImg.src = "./media/player_spritesheet.png";
@@ -274,7 +278,7 @@ function Loop ()
 
 function Update ()
 {
-    if(!onMenu)
+    if(!onMenu && !onHelp)
     {
         if(!onPause)
         {
@@ -301,31 +305,7 @@ function Update ()
             // camera update
             camera.Update(deltaTime);
 
-            for (var i = 0; i < doors.length; i++) {
-                if(doors[i].open)
-                {
-                    world.DestroyBody(doors[i].body);
-                    doors.splice(i, 1);
-                    break;
-                }
-            }
-
-            for (var i = 0; i < collectables.length; i++) {
-                if(collectables[i].taken)
-                {
-                    world.DestroyBody(collectables[i].body);
-                    collectables.splice(i, 1);
-                    break;
-                }
-            }
-
-            for (var i = 0; i < checkpoints.length; i++) {
-                if(checkpoints[i].checked && !checkpoints[i].destroyed)
-                {
-                    checkpoints[i].destroyed = true;
-                    world.DestroyBody(checkpoints[i].body);
-                }
-            }
+            UpdateLevel ();
         }
 
         if (input.isKeyDown(KEY_ESCAPE))
@@ -335,6 +315,35 @@ function Update ()
         }
     }
 
+}
+
+function UpdateLevel ()
+{
+    for (var i = 0; i < doors.length; i++) {
+        if(doors[i].open)
+        {
+            world.DestroyBody(doors[i].body);
+            doors.splice(i, 1);
+            break;
+        }
+    }
+
+    for (var i = 0; i < collectables.length; i++) {
+        if(collectables[i].taken)
+        {
+            world.DestroyBody(collectables[i].body);
+            collectables.splice(i, 1);
+            break;
+        }
+    }
+
+    for (var i = 0; i < checkpoints.length; i++) {
+        if(checkpoints[i].checked && !checkpoints[i].destroyed)
+        {
+            checkpoints[i].destroyed = true;
+            world.DestroyBody(checkpoints[i].body);
+        }
+    }
 }
 
 
@@ -352,99 +361,63 @@ function Draw ()
 
 
     // Playing the game
-    if(!onMenu)
+    if(!onMenu && !onHelp)
     {
         // draw the box2d world
         DrawWorld(world);
 
-        // draw the platforms
-        for (var i = 0; i < platforms.length; i++)
-            platforms[i].Draw(ctx);
-
-        for (var i = 0; i < checkpoints.length; i++)
-            checkpoints[i].Draw(ctx);
-
-        for (var i = 0; i < doors.length; i++)
-            doors[i].Draw(ctx);
-
-        for (var i = 0; i < collectables.length; i++)
-            collectables[i].Draw(ctx);
-
-        // draw the player
-        player.Draw(ctx);
-
-        // camera transform: restore
-        ctx.restore();
-
-        // draw the player score
-        ctx.fillStyle = "cyan";
-        ctx.font = "900 30px CaviarDreams";
-        ctx.fillText('Gems: ' + player.score, canvas.width * 0.87, 30);
-
-        // draw the FPS
-        ctx.fillStyle = "white";
-        ctx.font = "600 10px CaviarDreams";
-        ctx.fillText('FPS: ' + FPS, 10, 10);
-        ctx.fillText('deltaTime: ' + Math.round(1 / deltaTime), 10, 20);
+        DrawGame ();
 
         if(onPause)
         {
-
-            ctx.globalAlpha = 0.3;
-            ctx.fillStyle = "turquoise";
-            ctx.fillRect(0,0,canvas.width, canvas.height);
-            ctx.globalAlpha = 1.0;
-
-            ctx.fillStyle = "black";
-            ctx.font = "700 40px CaviarDreams";
-            ctx.fillText("Pause", canvas.width * 0.435, canvas.height * 0.3);
-
-            if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 75 && input.mouse.y > canvas.height * 0.5 - 30 && input.mouse.y  < canvas.height * 0.5 )
-            {
-                ctx.fillStyle = "yellow";
-            }
-            else
-            {
-                ctx.fillStyle = "black";
-            }
-
-            ctx.font = "700 30px CaviarDreams";
-            ctx.fillText("Menu", canvas.width * 0.45, canvas.height * 0.5);
+            DrawPause ();
         }
 
     }
     // On Menu
+    else if(onMenu)
+    {
+        DrawMenu ();
+    }
     else
     {
-        ctx.restore();
+        DrawHelp ();
 
-        ctx.fillStyle = "white";
-        ctx.font = "700 70px CaviarDreams";
-        ctx.fillText("Skylight", canvas.width * 0.38, canvas.height * 0.2);
-
-        if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 65 && input.mouse.y > canvas.height * 0.5 - 30 && input.mouse.y  < canvas.height * 0.5 )
-        {
-            ctx.fillStyle = "turquoise";
-        }
-        else {
-            ctx.fillStyle = "white";
-        }
-
-        ctx.font = "700 30px CaviarDreams";
-        ctx.fillText("Play", canvas.width * 0.45, canvas.height * 0.5);
-
-        if(input.mouse.x > canvas.width * 0.45 && input.mouse.x  < canvas.width * 0.45 + 65 && input.mouse.y > canvas.height * 0.6 - 30 && input.mouse.y  < canvas.height * 0.6 )
-        {
-            ctx.fillStyle = "turquoise";
-        }
-        else {
-            ctx.fillStyle = "white";
-        }
-
-        ctx.font = "700 30px CaviarDreams";
-        ctx.fillText("Help", canvas.width * 0.45, canvas.height * 0.6);
     }
 
+}
+
+function DrawGame ()
+{
+    // draw the platforms
+    for (var i = 0; i < platforms.length; i++)
+        platforms[i].Draw(ctx);
+
+    for (var i = 0; i < checkpoints.length; i++)
+        checkpoints[i].Draw(ctx);
+
+    for (var i = 0; i < doors.length; i++)
+        doors[i].Draw(ctx);
+
+    for (var i = 0; i < collectables.length; i++)
+        collectables[i].Draw(ctx);
+
+    // draw the player
+    player.Draw(ctx);
+
+    // camera transform: restore
+    ctx.restore();
+
+    // draw the player score
+    ctx.fillStyle = "cyan";
+    ctx.font = "900 30px CaviarDreams";
+    ctx.fillText('Gems: ' + player.score, canvas.width * 0.87, 30);
+
+    // draw the FPS
+    ctx.fillStyle = "white";
+    ctx.font = "600 10px CaviarDreams";
+    ctx.fillText('FPS: ' + FPS, 10, 10);
+    ctx.fillText('deltaTime: ' + Math.round(1 / deltaTime), 10, 20);
 }
 
 function DrawWorld (world)
@@ -455,4 +428,82 @@ function DrawWorld (world)
     ctx.scale(1, -1);
     world.DrawDebugData();
     ctx.restore();
+}
+
+function DrawPause ()
+{
+    ctx.globalAlpha = 0.3;
+    ctx.fillStyle = "turquoise";
+    ctx.fillRect(0,0,canvas.width, canvas.height);
+    ctx.globalAlpha = 1.0;
+
+    ctx.fillStyle = "black";
+    ctx.font = "700 40px CaviarDreams";
+    ctx.fillText("Pause", canvas.width * 0.435, canvas.height * 0.3);
+
+    if(MouseCheck(canvas.width * 0.45 , canvas.height * 0.5, 75, 30)) ctx.fillStyle = "yellow";
+    else ctx.fillStyle = "black";
+
+    ctx.font = "700 30px CaviarDreams";
+    ctx.fillText("Menu", canvas.width * 0.45, canvas.height * 0.5);
+}
+
+function DrawMenu ()
+{
+    ctx.restore();
+
+    ctx.fillStyle = "white";
+    ctx.font = "700 70px CaviarDreams";
+    ctx.fillText("Skylight", canvas.width * 0.38, canvas.height * 0.2);
+
+    if(MouseCheck(canvas.width * 0.45 , canvas.height * 0.5, 65, 30)) ctx.fillStyle = "turquoise";
+    else ctx.fillStyle = "white";
+
+    ctx.font = "700 30px CaviarDreams";
+    ctx.fillText("Play", canvas.width * 0.45, canvas.height * 0.5);
+
+    if(MouseCheck(canvas.width * 0.45 , canvas.height * 0.6, 65, 30)) ctx.fillStyle = "turquoise";
+    else ctx.fillStyle = "white";
+
+    ctx.font = "700 30px CaviarDreams";
+    ctx.fillText("Help", canvas.width * 0.45, canvas.height * 0.6);
+}
+
+function DrawHelp ()
+{
+    ctx.fillStyle = "white";
+    ctx.font = "700 30px CaviarDreams";
+
+    ctx.fillText("Move and Jump with the arrow keys or WASD", canvas.width * 0.25, canvas.height * 0.1);
+    ctx.drawImage(padImg, canvas.width * 0.2, canvas.height * 0.04, 50, 50);
+    ctx.drawImage(padImg, canvas.width * 0.75, canvas.height * 0.04, 50, 50);
+    ctx.fillText("Push boxes", canvas.width * 0.45, canvas.height * 0.2);
+    ctx.drawImage(boxImg, canvas.width * 0.4, canvas.height * 0.13, 50, 50);
+    ctx.drawImage(boxImg, canvas.width * 0.58, canvas.height * 0.13, 50, 50);
+    ctx.fillText("Bounce on this platforms", canvas.width * 0.38, canvas.height * 0.3);
+    ctx.drawImage(bounceImg, canvas.width * 0.38, canvas.height * 0.32, 350, 10);
+    ctx.fillText("Open doors with levers", canvas.width * 0.39, canvas.height * 0.4);
+    ctx.drawImage(switchImg, canvas.width * 0.33, canvas.height * 0.33, 50, 50);
+    ctx.drawImage(doorImg, canvas.width * 0.69, canvas.height * 0.33, 30, 70);
+    ctx.fillText("Climb up ladders", canvas.width * 0.42, canvas.height * 0.5);
+    ctx.drawImage(ladderImg, canvas.width * 0.37, canvas.height * 0.42, 50, 70);
+    ctx.drawImage(ladderImg, canvas.width * 0.63, canvas.height * 0.42, 50, 70);
+    ctx.fillText("Don't fall into the spikes", canvas.width * 0.39, canvas.height * 0.6);
+    ctx.drawImage(spikesImg, canvas.width * 0.38, canvas.height * 0.6, 350, 30);
+    ctx.fillText("Collect gems to gain score", canvas.width * 0.37, canvas.height * 0.7);
+    ctx.drawImage(gemImg, canvas.width * 0.33, canvas.height * 0.64, 50, 50);
+    ctx.drawImage(gemImg, canvas.width * 0.67, canvas.height * 0.64, 50, 50);
+    ctx.fillText("Touch Checkpoints to respawn there when dead", canvas.width * 0.25, canvas.height * 0.8);
+    ctx.drawImage(flagImg, canvas.width * 0.2, canvas.height * 0.75, 50, 70);
+    ctx.drawImage(flagImg, canvas.width * 0.8, canvas.height * 0.75, 50, 70);
+
+    if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30)) ctx.fillStyle = "turquoise";
+
+    ctx.font = "700 30px CaviarDreams";
+    ctx.fillText("Back", canvas.width * 0.48, canvas.height * 0.95);
+
+    ctx.fillStyle = "turquoise";
+    ctx.fillText("Press R to respawn", canvas.width * 0.05, canvas.height * 0.95);
+    ctx.fillText("Press Esc to pause the game", canvas.width * 0.65, canvas.height * 0.95);
+
 }
