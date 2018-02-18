@@ -745,6 +745,10 @@ function DrawFinish ()
 // Draws the scores section
 function DrawScore ()
 {
+    if (typeof(Storage) == "undefined")
+    {
+        console.log("testNo Storage on this website");
+    }
     // When score fill variable is null
     if(jsonScoreFile == null)
     {
