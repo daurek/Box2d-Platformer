@@ -758,7 +758,7 @@ function DrawScore ()
         if (jsonScoreFile == null)
         {
 
-            jsonScoreFile = JSON.parse(storage.getItem('../json/score.json'));
+            jsonScoreFile = JSON.parse(sessionStorage.getItem('../json/score.json'));
         }
 
     }
