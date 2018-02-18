@@ -1,7 +1,9 @@
+// Creates a normal platform with no friction (so the player can't climb them from the sides)
 
 function NewFloor (options)
 {
     return {
+        // Type (the json loader reads this variable to create different gameobjects)
         type: "floor",
 
         width: options.width,
@@ -22,20 +24,18 @@ function NewFloor (options)
 
         body: null,
 
-        Start: function () {
-
-
+        Start: function ()
+        {
+            // Creates body
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y  / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
         },
 
-        Update: function (deltaTime) {
-
-        },
-
-        Draw: function (ctx) {
+        Draw: function (ctx)
+        {
+            // Draws image
             var bodyPosition = this.body.GetPosition();
             var posX = bodyPosition.x * scale;
             var posY = Math.abs((bodyPosition.y * scale) - ctx.canvas.height);

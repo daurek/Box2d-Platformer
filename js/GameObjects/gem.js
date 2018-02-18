@@ -1,9 +1,11 @@
+// Creates a gem so the player can collect it and get score
+// The rest (start and draw) is the same as floor
 
 function NewGem (options)
 {
     return {
         type: "gem",
-
+        // if the gem has been taken (loop will delete those who have been taken)
         taken: false,
         width: options.width,
         height: options.height,
@@ -20,18 +22,16 @@ function NewGem (options)
 
         body: null,
 
-        Start: function () {
+        Start: function ()
+        {
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
         },
 
-        Update: function (deltaTime) {
-
-        },
-
-        Draw: function (ctx) {
+        Draw: function (ctx)
+        {
             var bodyPosition = this.body.GetPosition();
             var posX = bodyPosition.x * scale;
             var posY = Math.abs((bodyPosition.y * scale) - ctx.canvas.height);

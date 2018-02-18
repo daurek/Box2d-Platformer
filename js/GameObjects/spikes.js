@@ -1,3 +1,5 @@
+// Creates spikes that kill the player
+// The rest (data, start and draw) is the same as floor
 
 function NewSpikes (options)
 {
@@ -18,21 +20,14 @@ function NewSpikes (options)
             type: b2Body.b2_staticBody
         },
 
-
-
         body: null,
 
-        Start: function () {
-
-
+        Start: function ()
+        {
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y  / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
-        },
-
-        Update: function (deltaTime) {
-
         },
 
         Draw: function (ctx) {

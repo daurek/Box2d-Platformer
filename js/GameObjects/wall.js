@@ -1,15 +1,15 @@
-// Creates a block without friction (so the player can't climb them)
-// The rest (data, start and draw) is the same as floor
+// Creates a wall (game boundaries) with the given friction (side walls do not need friction so the player cant climb them, upper and lower walls need friction so the boxes dont slide on them)
+// The rest (draw) is the same as floor
 
-function NewBlock (options)
+function NewWall (options, friction = 0)
 {
     return {
-        type: "block",
+        type: "wall",
 
         width: options.width,
         height: options.height,
         position: {x: options.x, y: options.y},
-        img: floorImg,
+        img: greyImg,
         imgScale: 1,
 
         physicsInfo: {
@@ -22,8 +22,9 @@ function NewBlock (options)
 
         body: null,
 
-        Start: function ()
-        {
+        Start: function () {
+            // sets friction to new friction
+            this.physicsInfo.friction = friction;
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y  / scale,
                 this.width, this.height, this.physicsInfo);

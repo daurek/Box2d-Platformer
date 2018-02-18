@@ -1,22 +1,21 @@
-// Creates a block without friction (so the player can't climb them)
+// Creates an end point so the player finishes the level
 // The rest (data, start and draw) is the same as floor
 
-function NewBlock (options)
+function NewEndPoint (options)
 {
     return {
-        type: "block",
+        type: "endPoint",
 
         width: options.width,
         height: options.height,
         position: {x: options.x, y: options.y},
-        img: floorImg,
+        img: endFlagImg,
         imgScale: 1,
 
         physicsInfo: {
-            linearDamping: 0,
-            friction: 0,
             density: 1,
             fixedRotation: true,
+            friction: 0,
             type: b2Body.b2_staticBody
         },
 
@@ -25,12 +24,13 @@ function NewBlock (options)
         Start: function ()
         {
             this.body = CreateBox(world,
-                this.position.x / scale, this.position.y  / scale,
+                this.position.x / scale, this.position.y / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
         },
 
-        Draw: function (ctx) {
+        Draw: function (ctx)
+        {
             var bodyPosition = this.body.GetPosition();
             var posX = bodyPosition.x * scale;
             var posY = Math.abs((bodyPosition.y * scale) - ctx.canvas.height);

@@ -2,26 +2,34 @@
 var player = {
     type: 'player',
 
+    // coordinates
     position: {x: 200, y: 200},
+    // size
     width: 0.22,
     height: 0.35,
+    // If the player is dead
     isDead: false,
+    // If the player is going left
     isGoingLeft: false,
+
     // movement attr
     maxHorizontalVel: 2,
     maxVerticalVel: 4,
     jumpForce: 6,
 
+    // movement flags
     moveLeft: false,
     moveRight: false,
     moveUp: false,
-
     canJump: false,
 
+    // score recollected (gems)
     score: 0,
 
+    // animation
     animation: {
         img: null,
+        // frame data with limits and size
         timePerFrame: 1/12,
         currentFrametime: 0,
         frameWidth: 50.1,
@@ -30,7 +38,9 @@ var player = {
         actualY: 0,
         limitX: 250,
 
-        Update: function (deltaTime) {
+        // Changes between frames
+        Update: function (deltaTime)
+        {
             this.currentFrametime += deltaTime;
             if (this.currentFrametime >= this.timePerFrame)
             {
@@ -39,11 +49,13 @@ var player = {
                 if (this.actualX > this.limitX)
                 {
                     this.actualX = 0;
+                    // if the player is moving go to the movement frames
                     if (Math.abs(player.body.GetLinearVelocity().x) > 0)
                     {
                         this.actualY = 140;
                         this.limitX = 300;
                     }
+                    // else go to the idle frames
                     else
                     {
                         this.actualY = 0;
@@ -54,7 +66,9 @@ var player = {
             }
         },
 
-        Draw: function (ctx) {
+        // draws current frame
+        Draw: function (ctx)
+        {
             ctx.drawImage(this.img, this.actualX, this.actualY,
                 this.frameWidth, this.frameHeight,
                 -this.frameWidth / 2, -this.frameHeight / 2,
@@ -62,6 +76,7 @@ var player = {
         }
     },
 
+    // physics info
     physicsInfo: {
         density: 1,
         fixedRotation: true,
@@ -73,29 +88,33 @@ var player = {
 
     body: null,
 
-    Start: function () {
+    Start: function ()
+    {
+        // sets the img
         this.animation.img = playerImg;
-
+        // creates body
         this.body = CreateBox(world,
         this.position.x / scale, this.position.y / scale,
         this.width, this.height, this.physicsInfo);
 
         this.body.SetUserData(this);
 
-
     },
 
-    Update: function (deltaTime) {
+    // Movement and animation updates
+    Update: function (deltaTime)
+    {
         // update the animation
         this.animation.Update(deltaTime);
 
-
+        // right movement
         if(this.moveRight)
         {
             this.ApplyVelocity(new b2Vec2(1, 0));
             this.moveRight = false;
             this.isGoingLeft = false;
         }
+        // left movement
         else if(this.moveLeft)
         {
             this.ApplyVelocity(new b2Vec2(-1, 0));
@@ -111,6 +130,8 @@ var player = {
         // jump
         if (this.moveUp)
         {
+            // jump sound
+            jumpSound.play();
             this.ApplyVelocity(new b2Vec2(0, this.jumpForce));
             this.moveUp = false;
         }
@@ -129,7 +150,9 @@ var player = {
 
     },
 
-    Draw: function (ctx) {
+    // draws player
+    Draw: function (ctx)
+    {
         var bodyPosition = this.body.GetPosition();
         var posX = bodyPosition.x * scale;
         var posY = Math.abs((bodyPosition.y * scale) - ctx.canvas.height);
@@ -146,7 +169,9 @@ var player = {
         ctx.restore();
     },
 
-    ApplyVelocity: function (vel) {
+    // apply velocity with limits
+    ApplyVelocity: function (vel)
+    {
         var bodyVel = this.body.GetLinearVelocity();
         bodyVel.Add(vel);
 
@@ -161,7 +186,9 @@ var player = {
         this.body.SetLinearVelocity(bodyVel);
     },
 
-    Jump: function () {
+    // jump check (only when grounded)
+    Jump: function ()
+    {
         if (Math.abs(this.body.GetLinearVelocity().y) > 0)
             return false;
 

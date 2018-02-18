@@ -1,4 +1,4 @@
-
+// Only removed vertical displacement on this file (not needed since I wanted to see the whole level)
 // Camera parameters
 function Camera (player)
 {
@@ -13,7 +13,6 @@ function Camera (player)
 Camera.prototype.Start = function ()
 {
     this.offset.x = this.player.position.x;
-    //this.offset.y = 200;
 }
 
 Camera.prototype.Update = function (deltaTime)
@@ -23,11 +22,9 @@ Camera.prototype.Update = function (deltaTime)
     // horizontal displacement:
     this.position.x = this.player.position.x - canvas.width *.5;
 
-    // very little vertical displacement:
+    // Vertical displacement not needed
     //this.position.y = (this.player.position.y - this.offset.y) * 0.2;
 
     // horizontal (minX-maxX) clamp
     this.position.x = Math.min(Math.max(this.position.x, this.minX), this.maxX);
-
-    //console.log(this.position.x);
 }

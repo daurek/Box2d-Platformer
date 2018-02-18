@@ -1,9 +1,11 @@
+// Creates a door so the player can open it, need an id when created so its only activated by a switch with the same id
+// The rest (draw) is the same as floor
 
 function NewDoor (options, newDoorId)
 {
     return {
         type: "door",
-        
+        // Id
         doorId: null,
         open: false,
         width: options.width,
@@ -21,16 +23,14 @@ function NewDoor (options, newDoorId)
 
         body: null,
 
-        Start: function () {
+        Start: function ()
+        {
+            // Set id to new id
             this.doorId = newDoorId;
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
-        },
-
-        Update: function (deltaTime) {
-
         },
 
         Draw: function (ctx) {

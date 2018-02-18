@@ -1,3 +1,5 @@
+// Creates a bouncing platform with more restitution so the player bounces
+// The rest (data, start and draw) is the same as floor
 
 function NewBounce (options)
 {
@@ -19,21 +21,14 @@ function NewBounce (options)
             type: b2Body.b2_kinematicBody
         },
 
-
-
         body: null,
 
-        Start: function () {
-
-
+        Start: function ()
+        {
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y  / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
-        },
-
-        Update: function (deltaTime) {
-
         },
 
         Draw: function (ctx) {

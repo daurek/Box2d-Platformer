@@ -1,4 +1,4 @@
-
+// Only changed some values to be canvas related, so it resizes itself depending on the canvas (the rest is from the original)
 var background = {
 
     // fondo cielo

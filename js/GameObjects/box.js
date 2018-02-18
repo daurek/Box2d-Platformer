@@ -1,3 +1,5 @@
+// Creates a kinetic box so the player can push it
+// The rest (data, start and draw) is the same as floor
 
 function NewBox (options)
 {
@@ -19,15 +21,12 @@ function NewBox (options)
 
         body: null,
 
-        Start: function () {
+        Start: function ()
+        {
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
-        },
-
-        Update: function (deltaTime) {
-
         },
 
         Draw: function (ctx) {

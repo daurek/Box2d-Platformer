@@ -1,10 +1,13 @@
+// Creates a checkpoint so the player save his spawn there (body is deleted on contact)
+// The rest (start and draw) is the same as floor
 
 function NewCheckpoint (options)
 {
     return {
         type: "checkpoint",
-        
+        // If the flag has been touched, the loop will destroy the body
         checked: false,
+        // If the body has been destroyed, the loop will ignore it
         destroyed : false,
         width: options.width,
         height: options.height,
@@ -21,18 +24,16 @@ function NewCheckpoint (options)
 
         body: null,
 
-        Start: function () {
+        Start: function ()
+        {
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y / scale,
                 this.width, this.height, this.physicsInfo);
             this.body.SetUserData(this);
         },
 
-        Update: function (deltaTime) {
-
-        },
-
-        Draw: function (ctx) {
+        Draw: function (ctx)
+        {
             var bodyPosition = this.body.GetPosition();
             var posX = bodyPosition.x * scale;
             var posY = Math.abs((bodyPosition.y * scale) - ctx.canvas.height);

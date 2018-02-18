@@ -1,3 +1,5 @@
+// Addded collider function on contact
+
 // auxiliar code for working with Box2D
 // requires jQuery
 
@@ -130,76 +132,102 @@ function CreateWorld (ctx, gravity)
 
     world.SetDebugDraw(debugDraw);
 
-
-    // create the surface (an static object)
-    // left wall
-    CreateBox(world, 0, 1, .1, 8, {type : b2Body.b2_staticBody, friction: 0});
-    // down wall
-    CreateBox(world, 8, 0.25, 16, .2, {type : b2Body.b2_staticBody});
-    // top wall
-    CreateBox(world, 8, 6, 16, .2, {type : b2Body.b2_staticBody});
-    // right wall
-    CreateBox(world, 20.7, 1, .1, 8, {type : b2Body.b2_staticBody, friction: 0});
-
     return world;
 }
 
+// Creates world with gravity and prepares colisions
 function PreparePhysics (ctx)
 {
     // gravity vector
     gravity = new b2Vec2(0, -10);
 
+    // Create world with gravity
     CreateWorld(ctx, gravity);
 
     // prepare the collision event function
     Box2D.Dynamics.b2ContactListener.prototype.BeginContact = OnContactDetected;
 }
 
+// Everytime a contact is done
 function OnContactDetected (contact)
 {
+    // Both elements data
     var a = contact.GetFixtureA().GetBody().GetUserData();
     var b = contact.GetFixtureB().GetBody().GetUserData();
 
+    // If the elements that collide are not null and have a type
     if (a != null && b != null && typeof(a.type) !== 'undefined' && typeof(b.type) !== 'undefined')
     {
-      //console.log("collision between " + a.type + " and " + b.type);
+        // If the player collides with
         if(a.type == 'player')
         {
-            player.grounded = true;
+            // Depending of the type of the other object
             switch (b.type)
             {
+                // If it's a gem and its not taken
                 case 'gem':
                     if(!b.taken)
-                      {
-                          b.taken = true;
-                          player.score += 10;
-                      }
+                    {
+                        // Take it, add score and play the sound
+                        b.taken = true;
+                        player.score += 20;
+                        collectSound.play();
+                    }
                       break;
+                // If it's spikes
                 case 'spikes':
+                    // Set the player as dead (check made on player's update) and play death sound
                     player.isDead = true;
+                    deathSound.play();
                     break;
+                // If it's a switch and it's still closed
                 case 'switch':
                     if(b.closed)
                     {
+                        // Check every door
                         for (var i = 0; i < doors.length; i++)
                         {
+                            // If there's the same id
                             if(b.switchId == doors[i].doorId)
                             {
+                                // close the switch and set the door as open (it will be deleted on game loop), play the switch sound too
                                 b.closed = false;
                                 doors[i].open = true;
+                                switchSound.play();
                                 break;
                             }
                         }
                     }
                     break;
+                // If it's a checkpoint and it has not been checked
                 case 'checkpoint':
                     if(!b.checked)
                       {
+                          // Check it, set it position to the new spawn and play the sound
                           b.checked = true;
                           playerSpawn.xPos = b.position.x;
                           playerSpawn.yPos = b.position.y;
+                          checkpointSound.play();
                       }
                       break;
+                // If it's a bouncing platform just play the sound
+                case 'bouncing':
+                    bounceSound.play();
+                    break;
+                // If it's the end point then create the final score
+                case 'endPoint':
+                    // Play the finish sound
+                    finishSound.play();
+                    // We get the timer and split it so we can add the time to get a total in seconds
+                    var time = timer.split(/[:]+/);
+                    var timerScore =  60 * parseInt(time[0]) + parseInt(time[1]);
+                    // We add both gems score and the time score
+                    finalScore =  player.score + timerScore;
+                    // We send it to there to create a score which will be entered into the json file
+                    CreateScore(finalScore);
+                    // Game is on finish so we show the score
+                    playerState = states.onFinish;
+                    break;
                 default:
                     break;
             }

@@ -1,10 +1,13 @@
+// Creates a switch that opens the door with the same id
+// The rest (draw) is the same as floor
 
 function NewSwitch (options, newSwitchId)
 {
     return {
         type: "switch",
-        
+        // the id of the switch
         switchId: null,
+        // if it has been toggled
         closed: true,
         width: options.width,
         height: options.height,
@@ -22,6 +25,7 @@ function NewSwitch (options, newSwitchId)
         body: null,
 
         Start: function () {
+            // set the switch id to the new one
             this.switchId = newSwitchId;
             this.body = CreateBox(world,
                 this.position.x / scale, this.position.y / scale,
