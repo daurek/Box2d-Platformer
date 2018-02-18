@@ -745,52 +745,56 @@ function DrawFinish ()
 // Draws the scores section
 function DrawScore ()
 {
-    if (typeof(Storage) == "undefined")
-    {
-        console.log("testNo Storage on this website");
-    }
+
     // When score fill variable is null
     if(jsonScoreFile == null)
     {
         // Get the parsed score
         jsonScoreFile = ParseScore ();
 
-        // if (jsonScoreFile == null)
-        // {
-        //
-        //     jsonScoreFile = JSON.parse(localStorage.getItem('../json/score.json'));
-        // }
-
     }
 
-    // Sorts by score
-    jsonScoreFile.sort(function(a, b) {
-        return a.score < b.score;
-    });
-    jsonScoreFile.sort();
 
-    // Get lenght
-    var count = Object.keys(jsonScoreFile).length;
-
-    // If the json file has at least a score saved
-    if(count > 0)
+    if(jsonScoreFile != null)
     {
-        ctx.fillText("Rank -  Date - Score", canvas.width * 0.1, canvas.height * 0.1  );
-        // Loop through every score until limit has been reached (7 because that's the space we have)
-        for (var i = 0; i < count && i < 7; i++)
+        // Sorts by score
+        jsonScoreFile.sort(function(a, b) {
+            return a.score < b.score;
+        });
+        jsonScoreFile.sort();
+
+        // Get lenght
+        var count = Object.keys(jsonScoreFile).length;
+
+        // If the json file has at least a score saved
+        if(count > 0)
         {
-            // Get time and score to display it one after the other
-            ctx.fillText(i+1 + " - " + jsonScoreFile[i].time + "   -   " + jsonScoreFile[i].score, canvas.width * 0.1, canvas.height * ( 0.1 * i + 0.2)   );
+            ctx.fillText("Rank -  Date - Score", canvas.width * 0.1, canvas.height * 0.1  );
+            // Loop through every score until limit has been reached (7 because that's the space we have)
+            for (var i = 0; i < count && i < 7; i++)
+            {
+                // Get time and score to display it one after the other
+                ctx.fillText(i+1 + " - " + jsonScoreFile[i].time + "   -   " + jsonScoreFile[i].score, canvas.width * 0.1, canvas.height * ( 0.1 * i + 0.2)   );
+            }
         }
+        // if no scores then display that no scores have been saved
+        else ctx.fillText( "No scores saved", canvas.width * 0.4, canvas.height * 0.5   );
+
+
     }
-    // if no scores then display that no scores have been saved
-    else ctx.fillText( "No scores saved", canvas.width * 0.4, canvas.height * 0.5   );
+    // If the local storage has not loaded, happens on website
+    else
+    {
+         ctx.fillText( "Local Storage only available on local copy", canvas.width * 0.4, canvas.height * 0.5   );
+    }
+
 
     // Back text hover
     if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30)) ctx.fillStyle = "turquoise";
 
     // Back text
     ctx.fillText("Back", canvas.width * 0.48, canvas.height * 0.95);
+
 }
 
 // Returns parsed score from file
@@ -805,20 +809,25 @@ function CreateScore (newScore)
     // Get the json object
     var jsonFile = ParseScore ();
 
-    // Get Date (using it to note down the time in which the player completed the level)
-    var d = new Date();
+    // If the local storage has not loaded, happens on website
+    if(jsonFile != null)
+    {
+        // Get Date (using it to note down the time in which the player completed the level)
+        var d = new Date();
 
-    // Create a score with the time and the provided new score
-    var obj= {
-        time:  d.getHours() + ":" + d.getMinutes() + "  " + d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
-        score: newScore
-    };
+        // Create a score with the time and the provided new score
+        var obj= {
+            time:  d.getHours() + ":" + d.getMinutes() + "  " + d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
+            score: newScore
+        };
 
-    // Push it into the json object
-    jsonFile.push(obj);
+        // Push it into the json object
+        jsonFile.push(obj);
 
-    // Pushes the json object into the file
-    localStorage.setItem('../json/score.json', JSON.stringify(jsonFile));
+        // Pushes the json object into the file
+        localStorage.setItem('../json/score.json', JSON.stringify(jsonFile));
+    }
+
 
 }
 
