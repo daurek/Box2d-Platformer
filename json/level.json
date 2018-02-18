@@ -89,5 +89,5 @@ level = [
   {"type": "gem", "x": 1970,  "y": 230, "width": 0.2, "height": 0.2},
   {"type": "gem", "x": 1690,  "y": 400, "width": 0.15, "height": 0.15},
 
-  {"type": "endPoint", "x": 250,  "y": 70, "width": 0.25, "height": 0.4},
+  {"type": "endPoint", "x": 2035,  "y": 503, "width": 0.25, "height": 0.4},
 ];
