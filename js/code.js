@@ -65,6 +65,8 @@ var jsonScoreFile = null;
 // Player state (initial player state set to menu)
 var playerState = states.onMenu;
 
+var jsonFileTest = null;
+var test = null;
 // Sets refresh, gets canvas and context, loads media
 function Init ()
 {
@@ -161,6 +163,9 @@ function LoadImages ()
 // Start
 function Start ()
 {
+
+    localStorage.setItem('score', JSON.stringify(score));
+
     // Setup keyboard events
     SetupKeyboardEvents();
 
@@ -745,23 +750,18 @@ function DrawFinish ()
 // Draws the scores section
 function DrawScore ()
 {
-
-    // When score fill variable is null
     if(jsonScoreFile == null)
     {
-        // Get the parsed score
-        jsonScoreFile = ParseScore ();
-
+        jsonScoreFile = JSON.parse(localStorage.getItem('score'));
     }
-
 
     if(jsonScoreFile != null)
     {
         // Sorts by score
-        jsonScoreFile.sort(function(a, b) {
-            return a.score < b.score;
-        });
-        jsonScoreFile.sort();
+        // jsonScoreFile.sort(function(a, b) {
+        //     return a.score < b.score;
+        // });
+        // jsonScoreFile.sort();
 
         // Get lenght
         var count = Object.keys(jsonScoreFile).length;
@@ -785,8 +785,52 @@ function DrawScore ()
     // If the local storage has not loaded, happens on website
     else
     {
-         ctx.fillText( "Local Storage only available on local copy", canvas.width * 0.4, canvas.height * 0.5   );
+         ctx.fillText( "Local Storage only available on local copy", canvas.width * 0.25, canvas.height * 0.5   );
     }
+
+    // // When score fill variable is null
+    // if(jsonScoreFile == null)
+    // {
+    //     // Get the parsed score
+    //     jsonScoreFile = ParseScore ();
+    //     if (jsonScoreFile == null) {
+    //         console.log("nll");
+    //     }
+    // }
+
+
+    // if(jsonScoreFile != null)
+    // {
+    //     // Sorts by score
+    //     jsonScoreFile.sort(function(a, b) {
+    //         return a.score < b.score;
+    //     });
+    //     jsonScoreFile.sort();
+    //
+    //     // Get lenght
+    //     var count = Object.keys(jsonScoreFile).length;
+    //
+    //     // If the json file has at least a score saved
+    //     if(count > 0)
+    //     {
+    //         ctx.fillText("Rank -  Date - Score", canvas.width * 0.1, canvas.height * 0.1  );
+    //         // Loop through every score until limit has been reached (7 because that's the space we have)
+    //         for (var i = 0; i < count && i < 7; i++)
+    //         {
+    //             // Get time and score to display it one after the other
+    //             ctx.fillText(i+1 + " - " + jsonScoreFile[i].time + "   -   " + jsonScoreFile[i].score, canvas.width * 0.1, canvas.height * ( 0.1 * i + 0.2)   );
+    //         }
+    //     }
+    //     // if no scores then display that no scores have been saved
+    //     else ctx.fillText( "No scores saved", canvas.width * 0.4, canvas.height * 0.5   );
+    //
+    //
+    // }
+    // // If the local storage has not loaded, happens on website
+    // else
+    // {
+    //      ctx.fillText( "Local Storage only available on local copy", canvas.width * 0.25, canvas.height * 0.5   );
+    // }
 
 
     // Back text hover
@@ -807,10 +851,37 @@ function ParseScore ()
 function CreateScore (newScore)
 {
     // Get the json object
-    var jsonFile = ParseScore ();
+    // var jsonFile = ParseScore ();
+    //
+    // // If the local storage has not loaded, happens on website
+    // if(jsonFile != null)
+    // {
+    //     // Get Date (using it to note down the time in which the player completed the level)
+    //     var d = new Date();
+    //
+    //     // Create a score with the time and the provided new score
+    //     var obj= {
+    //         time:  d.getHours() + ":" + d.getMinutes() + "  " + d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
+    //         score: newScore
+    //     };
+    //
+    //     // Push it into the json object
+    //     jsonFile.push(obj);
+    //
+    //     // Pushes the json object into the file
+    //     localStorage.setItem('../json/score.json', JSON.stringify(jsonFile));
+    // }
+    //jsonFileTest = null;
+    //
+    if(jsonFileTest == null)
+    {
+        var jsonFileasdada = JSON.stringify(score);
+        // Parses that string
+        jsonFileTest = JSON.parse(jsonFileasdada);
+    }
 
     // If the local storage has not loaded, happens on website
-    if(jsonFile != null)
+    if(jsonFileTest != null)
     {
         // Get Date (using it to note down the time in which the player completed the level)
         var d = new Date();
@@ -822,13 +893,12 @@ function CreateScore (newScore)
         };
 
         // Push it into the json object
-        jsonFile.push(obj);
+        jsonFileTest.push(obj);
 
         // Pushes the json object into the file
-        localStorage.setItem('../json/score.json', JSON.stringify(jsonFile));
+        localStorage.setItem('score', JSON.stringify(jsonFileTest));
+
     }
-
-
 }
 
 // Loads, plays and stops a sound
