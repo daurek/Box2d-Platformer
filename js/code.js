@@ -753,7 +753,7 @@ function DrawScore ()
 
         if (jsonScoreFile == null)
         {
-            jsonScoreFile = JSON.parse(sessionStorage.getItem('../json/score.json'));
+            jsonScoreFile = JSON.parse(window.localStorage.getItem('../json/score.json'));
         }
 
     }
