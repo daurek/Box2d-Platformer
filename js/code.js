@@ -750,6 +750,12 @@ function DrawScore ()
     {
         // Get the parsed score
         jsonScoreFile = ParseScore ();
+
+        if (jsonScoreFile == null)
+        {
+            jsonScoreFile = JSON.parse(sessionStorage.getItem('../json/score.json'));
+        }
+
     }
 
     // Sorts by score
