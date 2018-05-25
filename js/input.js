@@ -72,6 +72,8 @@ function SetupMouseEvents ()
     canvas.addEventListener("mousedown", MouseDown, false);
     // mouse move event
     canvas.addEventListener("mousemove", MouseMove, false);
+
+    canvas.addEventListener("wheel", MouseWheel, false);
 }
 
 function MouseDown (event)
@@ -87,7 +89,7 @@ function MouseDown (event)
         // On menu we have 3 buttons
         case states.onMenu:
             // Play
-            if (MouseCheck( canvas.width * 0.45, canvas.height * 0.5, 100, 30))
+            if (MouseCheck(playButton))//canvas.width * 0.45, canvas.height * 0.5, 100, 30))
             {
                 // We always play the menusound on press
                 menuSound.play();
@@ -96,14 +98,14 @@ function MouseDown (event)
                 LoadGame();
             }
             // Help
-            else if (MouseCheck( canvas.width * 0.45, canvas.height * 0.6, 100, 30))
+            else if (MouseCheck(helpButton))
             {
                 menuSound.play();
                 // go to help section
                 playerState = states.onHelp;
             }
             // Scores
-            else if(MouseCheck(canvas.width * 0.44 , canvas.height * 0.7, 90, 30))
+            else if(MouseCheck(scoresButton))
             {
                 menuSound.play();
                 // Clear json file to reload it just after and go to check the scores
@@ -111,10 +113,16 @@ function MouseDown (event)
                 playerState = states.onScore;
 
             }
+            else if(MouseCheck(settingsButton))
+            {
+                menuSound.play();
+                // go to settings section
+                playerState = states.onSettings;
+            }
             break;
         // We can only go back to the menu on help
         case states.onHelp:
-            if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30))
+            if(MouseCheck(helpBackButton))
             {
                 menuSound.play();
                 playerState = states.onMenu;
@@ -122,7 +130,15 @@ function MouseDown (event)
             break;
         // We can only go back to the menu on scores
         case states.onScore:
-            if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30))
+            if(MouseCheck(scoresBackButton))
+            {
+                menuSound.play();
+                playerState = states.onMenu;
+            }
+            break;
+
+        case states.onSettings:
+            if(MouseCheck(settingsBackButton))
             {
                 menuSound.play();
                 playerState = states.onMenu;
@@ -130,7 +146,7 @@ function MouseDown (event)
             break;
         // We can only go back to the menu on pause (unless we press Escape)
         case states.onPause:
-            if(MouseCheck(canvas.width * 0.45 , canvas.height * 0.5, 100, 30))
+            if(MouseCheck(pauseToMenuButton))
             {
                 menuSound.play();
                 playerState = states.onMenu;
@@ -140,7 +156,7 @@ function MouseDown (event)
             break;
         // We can only go back to the menu on finish
         case states.onFinish:
-            if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30))
+            if(MouseCheck(finishToMenuButton))
             {
                 menuSound.play();
                 playerState = states.onMenu;
@@ -162,7 +178,23 @@ function MouseMove (event)
 }
 
 // Returns true if the mouse position is inside the provided boundaries
-function MouseCheck(xPos, yPos, xSize, ySize)
+function MouseCheck(button)
 {
-    return input.mouse.x > xPos && input.mouse.x  < xPos + xSize && input.mouse.y > yPos - ySize && input.mouse.y  < yPos;
+    return input.mouse.x > canvas.width * button.xPos && input.mouse.x  < canvas.width * button.xPos + button.xSize && input.mouse.y > canvas.height * button.yPos - button.ySize && input.mouse.y  < canvas.height * button.yPos;
+}
+
+function MouseWheel(event)
+{
+    if (playerState == states.onSettings)
+     {
+        if (event.deltaY > 0)
+            if (soundVolume > 0.01) soundVolume -= 0.01;
+            else soundVolume = 0;
+        else
+            if (soundVolume < 0.99) soundVolume += 0.01;
+            else soundVolume = 1;
+
+        menuSound.play();
+    }
+
 }

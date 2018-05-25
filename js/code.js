@@ -19,6 +19,9 @@ var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, d
 // Sounds references
 var collectSound, bounceSound, deathSound, finishSound, jumpSound, switchSound, menuSound, checkpointSound;
 
+// Sound volume
+var soundVolume = 0.1;
+
 // Game Camera
 var camera;
 
@@ -51,12 +54,14 @@ var states = {
     onHelp: 1,
     // Score section (check the highest scores, saved on json)
     onScore: 2,
+    // Settings section
+    onSettings: 3,
     // Pause, only during game, stops time, go to menu
-    onPause: 3,
+    onPause: 4,
     // Playing section, can pause with Esc and reset with R
-    onGame: 4,
+    onGame: 5,
     // Finish section that shows score and goes to menu
-    onFinish: 5
+    onFinish: 6
 };
 
 // Scores file
@@ -66,6 +71,24 @@ var jsonScoreFile = null;
 var playerState = states.onMenu;
 
 var jsonFileScore = null;
+
+// Text
+var gameTitle = { name: "Skylight", xPos:  0.415, yPos:  0.2, px: 70, color: "white"};
+    pauseText = { name: "Pause", xPos:  0.435, yPos:  0.3, px: 40, color: "black"};
+
+// Buttons (they need 2d size due to button colliders -> onHover check)
+var menuButtons = [
+    playButton = { name: "Play", xPos:  0.49, yPos:  0.5, xSize: 65, ySize: 30, px: 30, color: "white"},
+    helpButton = { name: "Help", xPos:  0.49, yPos:  0.6, xSize: 65, ySize: 30, px: 30, color: "white"},
+    scoresButton = { name: "Scores", xPos:  0.48, yPos:  0.7, xSize: 90, ySize: 30, px: 30, color: "white"},
+    settingsButton = { name: "Settings", xPos:  0.47, yPos:  0.8, xSize: 110, ySize: 30, px: 30, color: "white"}
+];
+var helpBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
+    scoresBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
+    settingsBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
+    pauseToMenuButton = { name: "Menu", xPos:  0.45, yPos:  0.5, xSize: 100, ySize: 30, px: 30, color: "white"};
+    finishToMenuButton = { name: "Menu", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
+
 
 // Sets refresh, gets canvas and context, loads media
 function Init ()
@@ -539,6 +562,9 @@ function Draw ()
         case states.onScore:
             DrawScore ();
             break;
+        case states.onSettings:
+            DrawSettings ();
+            break;
         // We draw the game behind the pause section
         case states.onPause:
             DrawGame ();
@@ -620,16 +646,10 @@ function DrawPause ()
     ctx.globalAlpha = 1.0;
 
     // Pause text
-    ctx.fillStyle = "black";
-    ctx.font = "700 40px CaviarDreams";
-    ctx.fillText("Pause", canvas.width * 0.435, canvas.height * 0.3);
+    DrawText(pauseText);
 
-    // Hover on menu text, sets the text color
-    if(MouseCheck(canvas.width * 0.45 , canvas.height * 0.5, 75, 30)) ctx.fillStyle = "turquoise";
-
-    // Menu text
-    ctx.font = "700 30px CaviarDreams";
-    ctx.fillText("Menu", canvas.width * 0.45, canvas.height * 0.5);
+    // Draw pause to menu button
+    DrawButton(pauseToMenuButton);
 }
 
 // Draws the menu section
@@ -638,30 +658,13 @@ function DrawMenu ()
     ctx.restore();
 
     // Game Title
-    ctx.fillStyle = "white";
-    ctx.font = "700 70px CaviarDreams";
-    ctx.fillText("Skylight", canvas.width * 0.38, canvas.height * 0.2);
+    DrawText(gameTitle);
 
-    // Hover on play
-    if(MouseCheck(canvas.width * 0.45 , canvas.height * 0.5, 65, 30)) ctx.fillStyle = "turquoise";
+    // Draw all menu buttons
+    for (var i = 0; i < menuButtons.length; i++)
+        DrawButton(menuButtons[i]);
 
-    ctx.font = "700 30px CaviarDreams";
-    // Play Text
-    ctx.fillText("Play", canvas.width * 0.45, canvas.height * 0.5);
 
-    // Hover on help
-    if(MouseCheck(canvas.width * 0.45 , canvas.height * 0.6, 65, 30)) ctx.fillStyle = "turquoise";
-    else ctx.fillStyle = "white";
-
-    // Help Text
-    ctx.fillText("Help", canvas.width * 0.45, canvas.height * 0.6);
-
-    // Hover on scores
-    if(MouseCheck(canvas.width * 0.44 , canvas.height * 0.7, 90, 30)) ctx.fillStyle = "turquoise";
-    else ctx.fillStyle = "white";
-
-    // Scores Text
-    ctx.fillText("Scores", canvas.width * 0.44, canvas.height * 0.7);
 }
 
 // Draws help section
@@ -708,12 +711,8 @@ function DrawHelp ()
     ctx.drawImage(flagImg, canvas.width * 0.2, canvas.height * 0.75, 50, 70);
     ctx.drawImage(flagImg, canvas.width * 0.8, canvas.height * 0.75, 50, 70);
 
-    // Hover on back text
-    if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30)) ctx.fillStyle = "turquoise";
-
-    // Back text
-    ctx.font = "700 30px CaviarDreams";
-    ctx.fillText("Back", canvas.width * 0.48, canvas.height * 0.95);
+    // Draw Back Text
+    DrawButton(helpBackButton);
 
     // Keys notes
     ctx.fillStyle = "turquoise";
@@ -737,12 +736,9 @@ function DrawFinish ()
     ctx.fillText("Gems + Time Left in seconds", canvas.width * 0.3, canvas.height * 0.4);
     ctx.fillText("Score = " + finalScore, canvas.width * 0.3, canvas.height * 0.5);
 
-    // Hover menu back text
-    if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30)) ctx.fillStyle = "turquoise";
 
-    // Menu text
-    ctx.font = "700 30px CaviarDreams";
-    ctx.fillText("Menu", canvas.width * 0.48, canvas.height * 0.95);
+    // To menu button
+    DrawButton(finishToMenuButton);
 }
 
 // Draws the scores section
@@ -782,12 +778,34 @@ function DrawScore ()
 
     }
 
-    // Back text hover
-    if(MouseCheck(canvas.width * 0.48 , canvas.height * 0.95, 65, 30)) ctx.fillStyle = "turquoise";
+    // Draw scores back button
+    DrawButton(scoresBackButton);
 
-    // Back text
-    ctx.fillText("Back", canvas.width * 0.48, canvas.height * 0.95);
+}
 
+function DrawSettings()
+{
+    ctx.drawImage(bounceImg, canvas.width * 0.30 , canvas.height * 0.1, 550, 50);
+    ctx.drawImage(gemImg, canvas.width * (soundVolume * 0.4) + 380, canvas.height * 0.1, 50, 50);
+    ctx.fillText( Math.round(soundVolume * 100) + "%", canvas.width * (soundVolume * 0.4) + 380, canvas.height * 0.07);
+    // Back text hover and draw back text
+    DrawButton(settingsBackButton);
+}
+
+// Draws a button, change color on mouse hover
+function DrawButton(button)
+{
+    if (MouseCheck(button)) button.color = "cyan";
+    else button.color = "white";
+
+    DrawText(button);
+}
+
+function DrawText(text)
+{
+    ctx.fillStyle = text.color;
+    ctx.font = "700 " + text.px +"px CaviarDreams";
+    ctx.fillText(text.name, canvas.width * text.xPos, canvas.height * text.yPos);
 }
 
 // Creates a score and puts it into the json file
@@ -834,8 +852,10 @@ function Sound (src)
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
 
+    //this.sound.volume = soundVolume;
     // Plays sound
     this.play = function(){
+        this.sound.volume = soundVolume;
         this.sound.play();
     }
 
