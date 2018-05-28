@@ -418,3 +418,16 @@ function Sound (src)
         this.sound.pause();
     }
 }
+
+// FB.login(function (response)
+// {
+//     ValidateUser();
+// }, {scope: 'public_profile, email '});
+//
+// function ValidateUser ()
+// {
+//     FB.getLoginStatus(function(response)
+//     {
+//         statusChangeCallback(response);
+//     });
+// }

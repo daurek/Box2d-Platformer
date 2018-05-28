@@ -50,7 +50,7 @@ var player = {
                 if (this.actualX > this.limitX)
                 {
                     this.actualX = 0;
-                    console.log(player.isShooting);
+                    
                     if (!player.isShooting)
                     {
                         this.frameWidth = 50.1;
