@@ -11,7 +11,8 @@ var player = {
     isDead: false,
     // If the player is going left
     isGoingLeft: false,
-
+    //
+    isShooting: false,
     // movement attr
     maxHorizontalVel: 2,
     maxVerticalVel: 4,
@@ -49,18 +50,31 @@ var player = {
                 if (this.actualX > this.limitX)
                 {
                     this.actualX = 0;
-                    // if the player is moving go to the movement frames
-                    if (Math.abs(player.body.GetLinearVelocity().x) > 0)
+                    console.log(player.isShooting);
+                    if (!player.isShooting)
                     {
-                        this.actualY = 140;
-                        this.limitX = 300;
+                        this.frameWidth = 50.1;
+                        // if the player is moving go to the movement frames
+                        if (Math.abs(player.body.GetLinearVelocity().x) > 0)
+                        {
+                            this.actualY = 140;
+                            this.limitX = 300;
+                        }
+                        // else go to the idle frames
+                        else
+                        {
+                            this.actualY = 0;
+                            this.limitX = 250;
+                        }
                     }
-                    // else go to the idle frames
                     else
                     {
-                        this.actualY = 0;
-                        this.limitX = 250;
+                        this.frameWidth = 49.3;
+                        this.limitX = 490;
+                        this.actualY = 210;
                     }
+
+
                 }
                 this.currentFrametime = 0.0;
             }
@@ -193,7 +207,18 @@ var player = {
             return false;
 
         this.moveUp = true;
+    },
+
+    Shoot: function ()
+    {
+        if (!this.isShooting)
+        {
+            this.isShooting = true;
+            setTimeout(function () {player.isShooting = false;}, 600);
+        }
     }
+
+
 
 
 }

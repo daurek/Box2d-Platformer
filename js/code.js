@@ -1,6 +1,11 @@
-// Canvas
+// Loader.js loads assets (images, sounds, json) and creates the levels
+// Renderer.js draws everything (images, text)
+// Input.js takes care of both Mouse and Keyboard input
+// Camera.js takes care of camera movement
+// Code.js takes care of game logic and loop
+
+// Canvas and context
 var canvas;
-// Canvas Context
 var ctx;
 // PI value
 var pi_2 = Math.PI * 2;
@@ -13,11 +18,6 @@ var time = 0,
     FPS  = 0,
     frames    = 0,
     acumDelta = 0;
-
-// Images references
-var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, doorImg, switchImg, flagImg, gemImg, padImg, greyImg, endFlagImg;
-// Sounds references
-var collectSound, bounceSound, deathSound, finishSound, jumpSound, switchSound, menuSound, checkpointSound;
 
 // Sound volume
 var soundVolume = 0.1;
@@ -61,8 +61,13 @@ var states = {
     // Playing section, can pause with Esc and reset with R
     onGame: 5,
     // Finish section that shows score and goes to menu
-    onFinish: 6
+    onFinish: 6,
+    // Levels section
+    onLevels: 7
 };
+
+var currentLevel = 1;
+var levelCount;
 
 // Scores file
 var jsonScoreFile = null;
@@ -72,27 +77,10 @@ var playerState = states.onMenu;
 
 var jsonFileScore = null;
 
-// Text
-var gameTitle = { name: "Skylight", xPos:  0.415, yPos:  0.2, px: 70, color: "white"};
-    pauseText = { name: "Pause", xPos:  0.435, yPos:  0.3, px: 40, color: "black"};
-
-// Buttons (they need 2d size due to button colliders -> onHover check)
-var menuButtons = [
-    playButton = { name: "Play", xPos:  0.49, yPos:  0.5, xSize: 65, ySize: 30, px: 30, color: "white"},
-    helpButton = { name: "Help", xPos:  0.49, yPos:  0.6, xSize: 65, ySize: 30, px: 30, color: "white"},
-    scoresButton = { name: "Scores", xPos:  0.48, yPos:  0.7, xSize: 90, ySize: 30, px: 30, color: "white"},
-    settingsButton = { name: "Settings", xPos:  0.47, yPos:  0.8, xSize: 110, ySize: 30, px: 30, color: "white"}
-];
-var helpBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
-    scoresBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
-    settingsBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
-    pauseToMenuButton = { name: "Menu", xPos:  0.45, yPos:  0.5, xSize: 100, ySize: 30, px: 30, color: "white"};
-    finishToMenuButton = { name: "Menu", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white"};
-
-
 // Sets refresh, gets canvas and context, loads media
 function Init ()
 {
+
     // Screen refresh
     window.requestAnimationFrame = (function (evt) {
         return window.requestAnimationFrame ||
@@ -112,75 +100,14 @@ function Init ()
     {
         // Get the 2D Context
         ctx = canvas.getContext('2d');
-
         // Load Sounds
         LoadSounds ();
-
         // Load Images
         LoadImages ();
         // When the player image loads start the game
         playerImg.onload = Start();
 
     }
-}
-
-// Loads sounds from media/sound
-function LoadSounds ()
-{
-    collectSound = new Sound("./media/sounds/collectSound.wav");
-    bounceSound = new Sound("./media/sounds/bounceSound.wav");
-    jumpSound = new Sound("./media/sounds/jumpSound.wav");
-    deathSound = new Sound("./media/sounds/deathSound.wav");
-    switchSound = new Sound("./media/sounds/switchSound.wav");
-    finishSound = new Sound("./media/sounds/finishSound.wav");
-    menuSound = new Sound("./media/sounds/menuSound.wav");
-    checkpointSound = new Sound("./media/sounds/checkpointSound.wav");
-}
-
-// Loads images from media/images
-function LoadImages ()
-{
-    floorImg = new Image();
-    floorImg.src = "./media/images/wall.png";
-
-    mountainImg = new Image();
-    mountainImg.src = "./media/images/mountain.png";
-
-    boxImg = new Image();
-    boxImg.src = "./media/images/box.png";
-
-    bounceImg = new Image();
-    bounceImg.src = "./media/images/bouncing.png";
-
-    ladderImg = new Image();
-    ladderImg.src = "./media/images/ladder.png";
-
-    spikesImg = new Image();
-    spikesImg.src = "./media/images/spikes.png";
-
-    doorImg = new Image();
-    doorImg.src = "./media/images/door.png";
-
-    switchImg = new Image();
-    switchImg.src = "./media/images/lever.png";
-
-    flagImg = new Image();
-    flagImg.src = "./media/images/flag.png";
-
-    gemImg = new Image();
-    gemImg.src = "./media/images/gem.png";
-
-    padImg = new Image();
-    padImg.src = "./media/images/pad.png";
-
-    greyImg = new Image();
-    greyImg.src = "./media/images/grey.png";
-
-    endFlagImg = new Image();
-    endFlagImg.src = "./media/images/endFlag.png";
-
-    playerImg = new Image();
-    playerImg.src = "./media/images/player_spritesheet.png";
 }
 
 // Start
@@ -196,6 +123,17 @@ function Start ()
     // Initialize Box2D
     PreparePhysics(ctx);
 
+    // Load levels json
+    jsonLevels = JSON.parse(JSON.stringify(levels));
+    levelCount = jsonLevels.length;
+
+    for (var i = 1; i <= levelCount; i++)
+    {
+        var button = { name: i, xPos:  i/10, yPos:  0.1, xSize: 65, ySize: 30, px: 30, color: "white", font: "Roboto-Light"};
+        levelsButtons.push(button);
+    }
+
+
     // Initialize background
     background.Start();
 
@@ -206,6 +144,9 @@ function Start ()
     camera = new Camera(player);
     camera.Start();
 
+    // Just for testing purposes (if the game is set to start on game then load everything)
+    if (playerState == states.onGame) LoadGame();
+
     // First call to the game loop
     Loop();
 }
@@ -213,8 +154,9 @@ function Start ()
 // Loads the game data and creates the level, resets evethings
 function LoadGame ()
 {
+
     // Parses JSON to get data and build level
-    ParseJSON();
+    ParseJSON(currentLevel);
 
     // Sets player to starting position
     Reset();
@@ -223,100 +165,12 @@ function LoadGame ()
     StartTimer();
 }
 
-// Parses the json file level to create the level
-function ParseJSON ()
+// Goes to the next level
+function NextLevel()
 {
-    // Get json file as a single string
-    var jsonFile = JSON.stringify(level);
-    // Parses that string
-    var levelData = JSON.parse(jsonFile);
-
-    // Creates level from parsed json going through every element of that json object
-    for (var i = 0; i < levelData.length; i++)
-    {
-        // Depending on the type set on the json it creates different objects on given coordinates, size and additional data
-        switch (levelData[i].type) {
-            // 4 bounding wall (2 upper, 2 sides)
-            case "wall":
-                var wall = NewWall({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height}, levelData[i].friction);
-                wall.Start();
-                platforms.push(wall);
-                break;
-            // Normal platforms
-            case "floor":
-                var floor = NewFloor({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height});
-                floor.Start();
-                platforms.push(floor);
-                break;
-            // Blocks without friction (so the player can't climb them)
-            case "block":
-                var block = NewBlock({x:  levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height});
-                block.Start();
-                platforms.push(block);
-                break;
-            // Boxes with friction so the player can push them, kinetic objects
-            case "box":
-                var box = NewBox({x:  levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height});
-                box.Start();
-                platforms.push(box);
-                break;
-            // Switches open doors with the same id
-            case "switch":
-                var lever = NewSwitch({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height}, levelData[i].id );
-                lever.Start();
-                platforms.push(lever);
-                break;
-            // Doors are opened when the corresponding switch is activated
-            case "door":
-                var door = NewDoor({x:  levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height}, levelData[i].id );
-                door.Start();
-                doors.push(door);
-                break;
-            // Spikes that kill the player on contact
-            case "spikes":
-                var spikes = NewSpikes({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height} );
-                spikes.Start();
-                platforms.push(spikes);
-                break;
-            // Platforms with high restitution that allow the player to bounce
-            case "bounce":
-                var bounce = NewBounce({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height} );
-                bounce.Start();
-                platforms.push(bounce);
-                break;
-            // Ladders with friction that allow the player to climb them due
-            case "ladder":
-                var ladder = NewLadder({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height} );
-                ladder.Start();
-                platforms.push(ladder);
-                break;
-            // Only one playerspawn (initial spawn)
-            case "playerSpawn":
-                playerSpawn.xPos = levelData[i].x;
-                playerSpawn.yPos = levelData[i].y;
-                break;
-            // Flag that sets the player spawn to its current position
-            case "checkpoint":
-                var checkpoint = NewCheckpoint({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height});
-                checkpoint.Start();
-                checkpoints.push(checkpoint);
-                break;
-            // Collectible that adds points on contact
-            case "gem":
-                var gem = NewGem({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height});
-                gem.Start();
-                collectables.push(gem);
-                break;
-            // Only one end (player finishes level here)
-            case "endPoint":
-                var endPoint = NewEndPoint({x: levelData[i].x, y: levelData[i].y, width: levelData[i].width, height: levelData[i].height});
-                endPoint.Start();
-                platforms.push(endPoint);
-                break;
-            default:
-                break;
-        }
-    }
+    ClearLevel();
+    currentLevel++;
+    LoadGame();
 }
 
 // Resets the player to the player spawn (can be set by a checkpoint)
@@ -360,7 +214,7 @@ function ClearLevel ()
     player.score = 0;
     timer = 03 + ":" + 00;
 
-    player.position.x = 0;
+    player.position.x = 1000;
     player.position.y = 0;
 
 
@@ -433,15 +287,19 @@ function UpdateGame ()
     world.ClearForces();
 
     // player input logic
-    if (input.isKeyPressed(KEY_LEFT))
+    if (input.isKeyPressed(KEY_LEFT) || input.isKeyPressed(KEY_A))
         player.moveLeft = true;
 
-    if (input.isKeyPressed(KEY_RIGHT))
+    if (input.isKeyPressed(KEY_RIGHT) || input.isKeyPressed(KEY_D))
         player.moveRight = true;
 
     // Jump key
-    if (input.isKeyPressed(KEY_UP))
+    if (input.isKeyPressed(KEY_UP) || input.isKeyPressed(KEY_W))
         player.Jump();
+
+    // Shooting key
+    if (input.isKeyPressed(KEY_Q))
+        player.Shoot();
 
     // Reset game key
     if (input.isKeyPressed(KEY_R))
@@ -535,310 +393,6 @@ function CheckSecond(sec)
     if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
     if (sec < 0) {sec = "59"}; // go around to 59
     return sec; // return the second
-}
-
-// Draws everything depending on the player state
-function Draw ()
-{
-    // clean the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // draw the background (with the parallax)
-    background.Draw(ctx);
-
-    // camera transform: translate
-    ctx.save();
-    ctx.translate(-camera.position.x, -camera.position.y);
-
-    // Depending on the player state
-    switch (playerState)
-    {
-        case states.onMenu:
-            DrawMenu ();
-            break;
-        case states.onHelp:
-            DrawHelp ();
-            break;
-        case states.onScore:
-            DrawScore ();
-            break;
-        case states.onSettings:
-            DrawSettings ();
-            break;
-        // We draw the game behind the pause section
-        case states.onPause:
-            DrawGame ();
-            DrawPause ();
-            break;
-        case states.onGame:
-            DrawGame ();
-            break;
-        // We draw the game behind the finish section
-        case states.onFinish:
-            DrawGame ();
-            DrawFinish ();
-            break;
-        default:
-            break;
-    }
-}
-
-// Draws the game
-function DrawGame ()
-{
-    // Debug draw (dont need it anymore)
-    // DrawWorld(world);
-
-    // draw the platforms
-    for (var i = 0; i < platforms.length; i++)
-        platforms[i].Draw(ctx);
-
-    // draw the checkpoints
-    for (var i = 0; i < checkpoints.length; i++)
-        checkpoints[i].Draw(ctx);
-
-    // draw the doors
-    for (var i = 0; i < doors.length; i++)
-        doors[i].Draw(ctx);
-
-    // draw the collectables
-    for (var i = 0; i < collectables.length; i++)
-        collectables[i].Draw(ctx);
-
-    // draw the player
-    player.Draw(ctx);
-
-    // camera transform: restore
-    ctx.restore();
-
-
-    // draw the player score and the countdown timer
-    ctx.fillStyle = "cyan";
-    ctx.font = "900 30px CaviarDreams";
-    ctx.fillText('Gems: ' + player.score, canvas.width * 0.87, 30);
-    ctx.fillText('Countdown: ' + timer, canvas.width * 0.65, 30);
-
-    // draw the FPS
-    ctx.fillStyle = "white";
-    ctx.font = "600 10px CaviarDreams";
-    ctx.fillText('FPS: ' + FPS, 10, 10);
-    ctx.fillText('deltaTime: ' + Math.round(1 / deltaTime), 10, 20);
-}
-
-// Draws the world on debug
-function DrawWorld (world)
-{
-    // Transform the canvas coordinates to cartesias coordinates
-    ctx.save();
-    ctx.translate(0, canvas.height);
-    ctx.scale(1, -1);
-    world.DrawDebugData();
-    ctx.restore();
-}
-
-// Draws the pause section
-function DrawPause ()
-{
-    // white screen
-    ctx.globalAlpha = 0.3;
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0,canvas.width, canvas.height);
-    ctx.globalAlpha = 1.0;
-
-    // Pause text
-    DrawText(pauseText);
-
-    // Draw pause to menu button
-    DrawButton(pauseToMenuButton);
-}
-
-// Draws the menu section
-function DrawMenu ()
-{
-    ctx.restore();
-
-    // Game Title
-    DrawText(gameTitle);
-
-    // Draw all menu buttons
-    for (var i = 0; i < menuButtons.length; i++)
-        DrawButton(menuButtons[i]);
-
-
-}
-
-// Draws help section
-function DrawHelp ()
-{
-    ctx.fillStyle = "white";
-    ctx.font = "700 30px CaviarDreams";
-
-    // Move text and images
-    ctx.fillText("Move and Jump with the arrow keys or WASD", canvas.width * 0.25, canvas.height * 0.1);
-    ctx.drawImage(padImg, canvas.width * 0.2, canvas.height * 0.04, 50, 50);
-    ctx.drawImage(padImg, canvas.width * 0.75, canvas.height * 0.04, 50, 50);
-
-    // Boxes text and images
-    ctx.fillText("Push boxes", canvas.width * 0.45, canvas.height * 0.2);
-    ctx.drawImage(boxImg, canvas.width * 0.4, canvas.height * 0.13, 50, 50);
-    ctx.drawImage(boxImg, canvas.width * 0.58, canvas.height * 0.13, 50, 50);
-
-    // Bouncing platforms text and images
-    ctx.fillText("Bounce on this platforms", canvas.width * 0.38, canvas.height * 0.3);
-    ctx.drawImage(bounceImg, canvas.width * 0.38, canvas.height * 0.32, 350, 10);
-
-    // Doors and switches text and images
-    ctx.fillText("Open doors with levers", canvas.width * 0.39, canvas.height * 0.4);
-    ctx.drawImage(switchImg, canvas.width * 0.33, canvas.height * 0.33, 50, 50);
-    ctx.drawImage(doorImg, canvas.width * 0.69, canvas.height * 0.33, 30, 70);
-
-    // Ladders text and images
-    ctx.fillText("Climb up ladders", canvas.width * 0.42, canvas.height * 0.5);
-    ctx.drawImage(ladderImg, canvas.width * 0.37, canvas.height * 0.42, 50, 70);
-    ctx.drawImage(ladderImg, canvas.width * 0.63, canvas.height * 0.42, 50, 70);
-
-    // Spikes text and images
-    ctx.fillText("Don't fall into the spikes", canvas.width * 0.39, canvas.height * 0.6);
-    ctx.drawImage(spikesImg, canvas.width * 0.38, canvas.height * 0.6, 350, 30);
-
-    // Gems text and images
-    ctx.fillText("Collect gems to gain score", canvas.width * 0.37, canvas.height * 0.7);
-    ctx.drawImage(gemImg, canvas.width * 0.33, canvas.height * 0.64, 50, 50);
-    ctx.drawImage(gemImg, canvas.width * 0.67, canvas.height * 0.64, 50, 50);
-
-    // Checkpoints text and images
-    ctx.fillText("Touch Checkpoints to respawn there when dead", canvas.width * 0.25, canvas.height * 0.8);
-    ctx.drawImage(flagImg, canvas.width * 0.2, canvas.height * 0.75, 50, 70);
-    ctx.drawImage(flagImg, canvas.width * 0.8, canvas.height * 0.75, 50, 70);
-
-    // Draw Back Text
-    DrawButton(helpBackButton);
-
-    // Keys notes
-    ctx.fillStyle = "turquoise";
-    ctx.fillText("Press R to respawn", canvas.width * 0.05, canvas.height * 0.95);
-    ctx.fillText("Press Esc to pause the game", canvas.width * 0.65, canvas.height * 0.95);
-
-}
-
-// Draws the finish section
-function DrawFinish ()
-{
-    // white screen
-    ctx.globalAlpha = 0.6;
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0,canvas.width, canvas.height);
-    ctx.globalAlpha = 1.0;
-
-    // Final score text
-    ctx.fillStyle = "black";
-    ctx.font = "700 40px CaviarDreams";
-    ctx.fillText("Gems + Time Left in seconds", canvas.width * 0.3, canvas.height * 0.4);
-    ctx.fillText("Score = " + finalScore, canvas.width * 0.3, canvas.height * 0.5);
-
-
-    // To menu button
-    DrawButton(finishToMenuButton);
-}
-
-// Draws the scores section
-function DrawScore ()
-{
-    // If it's empty
-    if(jsonScoreFile == null)
-    {
-        // Load the local storage score
-        jsonScoreFile = JSON.parse(localStorage.getItem('score'));
-    }
-
-    if(jsonScoreFile != null)
-    {
-        //Sorts by score
-        jsonScoreFile.sort(function(a, b) {
-            return a.score < b.score;
-        });
-        jsonScoreFile.sort();
-
-        // Get lenght
-        var count = Object.keys(jsonScoreFile).length;
-
-        // If the json file has at least a score saved
-        if(count > 0)
-        {
-            ctx.fillText("Rank -  Date - Score", canvas.width * 0.1, canvas.height * 0.1  );
-            // Loop through every score until limit has been reached (7 because that's the space we have)
-            for (var i = 0; i < count && i < 7; i++)
-            {
-                // Get time and score to display it one after the other
-                ctx.fillText(i+1 + " - " + jsonScoreFile[i].time + "   -   " + jsonScoreFile[i].score, canvas.width * 0.1, canvas.height * ( 0.1 * i + 0.2)   );
-            }
-        }
-        // if no scores then display that no scores have been saved
-        else ctx.fillText( "No scores saved", canvas.width * 0.4, canvas.height * 0.5   );
-
-    }
-
-    // Draw scores back button
-    DrawButton(scoresBackButton);
-
-}
-
-function DrawSettings()
-{
-    ctx.drawImage(bounceImg, canvas.width * 0.30 , canvas.height * 0.1, 550, 50);
-    ctx.drawImage(gemImg, canvas.width * (soundVolume * 0.4) + 380, canvas.height * 0.1, 50, 50);
-    ctx.fillText( Math.round(soundVolume * 100) + "%", canvas.width * (soundVolume * 0.4) + 380, canvas.height * 0.07);
-    // Back text hover and draw back text
-    DrawButton(settingsBackButton);
-}
-
-// Draws a button, change color on mouse hover
-function DrawButton(button)
-{
-    if (MouseCheck(button)) button.color = "cyan";
-    else button.color = "white";
-
-    DrawText(button);
-}
-
-function DrawText(text)
-{
-    ctx.fillStyle = text.color;
-    ctx.font = "700 " + text.px +"px CaviarDreams";
-    ctx.fillText(text.name, canvas.width * text.xPos, canvas.height * text.yPos);
-}
-
-// Creates a score and puts it into the json file
-function CreateScore (newScore)
-{
-    // If the json is null
-    if(jsonFileScore == null)
-    {
-        // Get the file
-        var string = JSON.stringify(score);
-        // Parses that string
-        jsonFileScore = JSON.parse(string);
-    }
-
-    // If it has loaded correctly
-    if(jsonFileScore != null)
-    {
-        // Get Date (using it to note down the time in which the player completed the level)
-        var d = new Date();
-
-        // Create a score with the time and the provided new score
-        var obj= {
-            time:  d.getHours() + ":" + d.getMinutes() + "  " + d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
-            score: newScore
-        };
-
-        // Push it into the json object
-        jsonFileScore.push(obj);
-
-        // Pushes the json object into the file
-        localStorage.setItem('score', JSON.stringify(jsonFileScore));
-
-    }
 }
 
 // Loads, plays and stops a sound

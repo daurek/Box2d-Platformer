@@ -1,7 +1,7 @@
 
 * {
-    margin: 0;
-    padding: 0;
+    /* margin: 0; */
+    /* padding: 0; */
     list-style: none;
     text-decoration:: none;
 }
@@ -13,6 +13,8 @@ body {
 #container {
     margin: 20px auto;
     width: 1280px;
+
+    transform: translateY(25%);
 }
 
 #my_canvas {
@@ -22,6 +24,11 @@ body {
 @font-face {
     font-family: CaviarDreams;
     src: url(../media/fonts/CaviarDreams.ttf);
+}
+
+@font-face {
+    font-family: Roboto-Light;
+    src: url(../media/fonts/Roboto-Light.ttf);
 }
 
 #name {

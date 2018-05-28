@@ -9,6 +9,7 @@ var KEY_RIGHT = 39, KEY_D = 68;
 var KEY_DOWN  = 40, KEY_S = 83;
 var KEY_PAUSE = 19; KEY_R = 82;
 var KEY_SPACE = 32; KEY_ESCAPE = 27;
+var KEY_Q = 81;
 
 // Input data
 var input =
@@ -72,7 +73,7 @@ function SetupMouseEvents ()
     canvas.addEventListener("mousedown", MouseDown, false);
     // mouse move event
     canvas.addEventListener("mousemove", MouseMove, false);
-
+    // mouse wheel event
     canvas.addEventListener("wheel", MouseWheel, false);
 }
 
@@ -82,7 +83,12 @@ function MouseDown (event)
     var clickX = event.clientX - rect.left;
     var clickY = event.clientY - rect.top;
     //console.log("MouseDown: " + "X=" + clickX + ", Y=" + clickY);
+    ButtonCheck();
 
+}
+
+function ButtonCheck()
+{
     // Depending on the player state
     switch (playerState)
     {
@@ -96,6 +102,13 @@ function MouseDown (event)
                 // go to game and load it
                 playerState = states.onGame;
                 LoadGame();
+            }
+            // Help
+            else if (MouseCheck(levelsButton))
+            {
+                menuSound.play();
+                // go to levels section
+                playerState = states.onLevels;
             }
             // Help
             else if (MouseCheck(helpButton))
@@ -136,7 +149,6 @@ function MouseDown (event)
                 playerState = states.onMenu;
             }
             break;
-
         case states.onSettings:
             if(MouseCheck(settingsBackButton))
             {
@@ -163,11 +175,33 @@ function MouseDown (event)
                 // Clear the level
                 ClearLevel ();
             }
+            else if (MouseCheck(nextLevelButton))
+            {
+                menuSound.play();
+                NextLevel();
+                playerState = states.onGame;
+            }
+            break;
+        case states.onLevels:
+            if(MouseCheck(levelsBackButton))
+            {
+                menuSound.play();
+                playerState = states.onMenu;
+            }
+
+            for (var i = 0; i < levelsButtons.length; i++)
+            {
+                if (MouseCheck(levelsButtons[i]))
+                {
+                    currentLevel = i+1;
+                    playerState = states.onGame;
+                    LoadGame();
+                }
+            }
             break;
         default:
             break;
     }
-
 }
 
 function MouseMove (event)
@@ -196,5 +230,7 @@ function MouseWheel(event)
 
         menuSound.play();
     }
+
+
 
 }
