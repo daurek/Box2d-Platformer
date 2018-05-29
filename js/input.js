@@ -137,7 +137,7 @@ function ButtonCheck()
                 menuSound.play();
                 // go to settings section
                 //playerState = states.onSettings;
-                checkLoginState();
+                FB.login(statusChangeCallback, {scope: 'email,public_profile', return_scopes: true});
             }
             break;
         // We can only go back to the menu on help
