@@ -277,17 +277,20 @@ function UpdateGame ()
     // Step(timestep , velocity iterations, position iterations)
     world.Step(deltaTime, 8, 3);
     world.ClearForces();
+    if (!player.isShooting)
+    {
+        // player input logic
+        if (input.isKeyPressed(KEY_LEFT) || input.isKeyPressed(KEY_A))
+            player.moveLeft = true;
 
-    // player input logic
-    if (input.isKeyPressed(KEY_LEFT) || input.isKeyPressed(KEY_A))
-        player.moveLeft = true;
+        if (input.isKeyPressed(KEY_RIGHT) || input.isKeyPressed(KEY_D))
+            player.moveRight = true;
 
-    if (input.isKeyPressed(KEY_RIGHT) || input.isKeyPressed(KEY_D))
-        player.moveRight = true;
+        // Jump key
+        if (input.isKeyPressed(KEY_UP) || input.isKeyPressed(KEY_W))
+            player.Jump();
+    }
 
-    // Jump key
-    if (input.isKeyPressed(KEY_UP) || input.isKeyPressed(KEY_W))
-        player.Jump();
 
     // Shooting key
     if (input.isKeyPressed(KEY_Q))

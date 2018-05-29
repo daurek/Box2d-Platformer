@@ -49,10 +49,12 @@ var player = {
                 this.actualX += this.frameWidth;
                 if (this.actualX > this.limitX)
                 {
-                    this.actualX = 0;
-                    
+
+
                     if (!player.isShooting)
                     {
+                        this.actualX = 0;
+
                         this.frameWidth = 50.1;
                         // if the player is moving go to the movement frames
                         if (Math.abs(player.body.GetLinearVelocity().x) > 0)
@@ -69,6 +71,8 @@ var player = {
                     }
                     else
                     {
+                        this.actualX = 200;
+
                         this.frameWidth = 49.3;
                         this.limitX = 490;
                         this.actualY = 210;
@@ -214,7 +218,7 @@ var player = {
         if (!this.isShooting)
         {
             this.isShooting = true;
-            setTimeout(function () {player.isShooting = false;}, 600);
+            setTimeout(function () {player.isShooting = false;}, 800);
         }
     }
 
