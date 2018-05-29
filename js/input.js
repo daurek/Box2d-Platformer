@@ -135,8 +135,7 @@ function ButtonCheck()
             else if(MouseCheck(facebookButton))
             {
                 menuSound.play();
-                // go to settings section
-                //playerState = states.onSettings;
+                // open facebook login window
                 FB.login(statusChangeCallback, {scope: 'email,public_profile', return_scopes: true});
             }
             break;
