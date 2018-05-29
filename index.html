@@ -62,6 +62,15 @@ function statusChangeCallback(response) {
    });
  }
 
+    function testAPI ()
+    {
+        console.log('Welcome! Fetching your information.... ');
+        FB.api('/me?fields=id,name,first_name,email,picture', function(response) {
+        // The user was logged successfully
+        console.log('Successful login for: ' + response.name);
+        console.log(response);
+        });
+    }
 
   window.fbAsyncInit = function() {
     FB.init({
