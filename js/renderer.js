@@ -7,7 +7,7 @@ var gameTitle = { name: "Skylight", xPos:  0.415, yPos:  0.2, px: 70, color: "wh
     countdownText = { name: "-", defaultText: "Countdown: ",xPos:  0.65, yPos:  0.05, px: 30, color: "white", font: "Roboto-Light"};
     fpsText = { name: "-", defaultText: "FPS: ",xPos:  0.01, yPos:  0.03, px: 15, color: "white", font: "Roboto-Light"};
     deltaTimeText = { name: "-", defaultText: "deltaTime: ",xPos:  0.01, yPos:  0.06, px: 15, color: "white", font: "Roboto-Light"};
-    userName = { name: "", xPos:  0.07, yPos:  0.97, px: 30, color: "white", font: "Roboto-Light"};
+    userName = { name: "Not Connected", xPos:  0.07, yPos:  0.97, px: 30, color: "white", font: "Roboto-Light"};
 // Buttons (they need 2d size due to button colliders -> onHover check)
     // Menu buttons
 var menuButtons = [

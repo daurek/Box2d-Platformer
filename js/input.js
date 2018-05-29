@@ -136,7 +136,8 @@ function ButtonCheck()
             {
                 menuSound.play();
                 // open facebook login window
-                FB.login(statusChangeCallback, {scope: 'email,public_profile', return_scopes: true});
+                if(!loggedOn) FB.login(statusChangeCallback, {scope: 'email,public_profile', return_scopes: true});
+                else CloseFacebook();
             }
             break;
         // We can only go back to the menu on help

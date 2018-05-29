@@ -36,6 +36,8 @@
 <!-- Facebook API -->
 <script>
 
+    var loggedOn = false;
+
     function statusChangeCallback(response)
     {
         console.log(response);
@@ -68,9 +70,27 @@
         console.log('Successful login for: ' + response.name);
         console.log(response);
         userName.name = response.name;
+        loggedOn = true;
         });
     }
 
+    function CloseFacebook ()
+    {
+        FB.getLoginStatus(function (response)
+        {
+            if (response.status === 'connected')
+            {
+                FB.logout(function (response)
+                {
+                    console.log('User logged out');
+                    setTimeout(function () {
+                        loggedOn = false;
+                        userName.name = "Not Connected";
+                    }, 500);
+                });
+            }
+        });
+    }
     window.fbAsyncInit = function()
     {
         FB.init({
