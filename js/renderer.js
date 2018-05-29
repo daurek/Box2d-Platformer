@@ -15,7 +15,8 @@ var menuButtons = [
     levelsButton = { name: "Levels", xPos:  0.48, yPos:  0.6, xSize: 90, ySize: 30, px: 30, color: "white", font: "CaviarDreams"},
     helpButton = { name: "Help", xPos:  0.49, yPos:  0.7, xSize: 65, ySize: 30, px: 30, color: "white", font: "CaviarDreams"},
     scoresButton = { name: "Scores", xPos:  0.48, yPos:  0.8, xSize: 90, ySize: 30, px: 30, color: "white", font: "CaviarDreams"},
-    settingsButton = { name: "Settings", xPos:  0.47, yPos:  0.9, xSize: 110, ySize: 30, px: 30, color: "white", font: "CaviarDreams"}
+    settingsButton = { name: "Settings", xPos:  0.47, yPos:  0.9, xSize: 110, ySize: 30, px: 30, color: "white", font: "CaviarDreams"},
+    facebookButton = { name: "", xPos:  0.01, yPos:  0.98, xSize: 50, ySize: 50, px: 30, color: "white", font: "CaviarDreams"}
 ];
 var helpBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white", font: "Roboto-Light"};
     levelsBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize: 30, px: 30, color: "white", font: "Roboto-Light"};
@@ -155,6 +156,12 @@ function DrawMenu ()
     for (var i = 0; i < menuButtons.length; i++)
         DrawButton(menuButtons[i]);
 
+
+    // if (!MouseCheck())
+    // {
+    //
+    // }
+    ctx.drawImage(facebookImg, canvas.width * 0.01, canvas.height * 0.9, 50, 50);
 
 }
 

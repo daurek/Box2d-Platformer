@@ -1,6 +1,6 @@
 
 // Images references
-var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, doorImg, switchImg, flagImg, gemImg, padImg, greyImg, endFlagImg;
+var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, doorImg, switchImg, flagImg, gemImg, padImg, greyImg, endFlagImg, facebookImg;
 // Sounds references
 var collectSound, bounceSound, deathSound, finishSound, jumpSound, switchSound, menuSound, checkpointSound;
 
@@ -23,6 +23,9 @@ function LoadSounds ()
 // Loads images from media/images
 function LoadImages ()
 {
+    facebookImg = new Image();
+    facebookImg.src = "./media/images/facebook.png";
+
     floorImg = new Image();
     floorImg.src = "./media/images/wall.png";
 
@@ -64,6 +67,8 @@ function LoadImages ()
 
     playerImg = new Image();
     playerImg.src = "./media/images/player_spritesheet.png";
+
+
 }
 
 // Parses the json file level to create the level
@@ -190,4 +195,19 @@ function CreateScore (newScore)
         localStorage.setItem('score', JSON.stringify(jsonFileScore));
 
     }
+}
+
+function LoadLevels()
+{
+    // Load levels json
+    jsonLevels = JSON.parse(JSON.stringify(levels));
+    levelCount = jsonLevels.length;
+
+    // Create Levels buttons
+    for (var i = 1; i <= levelCount; i++)
+    {
+        var button = { name: i, xPos:  i/10, yPos:  0.1, xSize: 65, ySize: 30, px: 30, color: "white", font: "Roboto-Light"};
+        levelsButtons.push(button);
+    }
+
 }

@@ -132,6 +132,13 @@ function ButtonCheck()
                 // go to settings section
                 playerState = states.onSettings;
             }
+            else if(MouseCheck(facebookButton))
+            {
+                menuSound.play();
+                // go to settings section
+                //playerState = states.onSettings;
+                checkLoginState();
+            }
             break;
         // We can only go back to the menu on help
         case states.onHelp:
@@ -202,6 +209,7 @@ function ButtonCheck()
         default:
             break;
     }
+
 }
 
 function MouseMove (event)
@@ -230,7 +238,4 @@ function MouseWheel(event)
 
         menuSound.play();
     }
-
-
-
 }

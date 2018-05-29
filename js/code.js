@@ -123,16 +123,8 @@ function Start ()
     // Initialize Box2D
     PreparePhysics(ctx);
 
-    // Load levels json
-    jsonLevels = JSON.parse(JSON.stringify(levels));
-    levelCount = jsonLevels.length;
-
-    for (var i = 1; i <= levelCount; i++)
-    {
-        var button = { name: i, xPos:  i/10, yPos:  0.1, xSize: 65, ySize: 30, px: 30, color: "white", font: "Roboto-Light"};
-        levelsButtons.push(button);
-    }
-
+    // Load levels
+    LoadLevels();
 
     // Initialize background
     background.Start();
