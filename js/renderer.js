@@ -28,6 +28,9 @@ var helpBackButton = { name: "Back", xPos:  0.48, yPos:  0.95, xSize: 65, ySize:
 
 var levelsButtons = [];
 
+var rain = [];
+    rainDrops = 250;
+
 // Draws everything depending on the player state
 function Draw ()
 {
@@ -109,6 +112,8 @@ function DrawGame ()
     ctx.fillStyle= "rgba(0, 0, 0, 0.7)";
     ctx.fillRect(0,0, canvas.width,canvas.height * 0.07);
 
+    DrawRain();
+
     // Draw the player score and the countdown timer
     DrawDynamicText(gemsCount, player.score);
     DrawDynamicText(countdownText, timer)
@@ -116,7 +121,36 @@ function DrawGame ()
     // Draw fps and deltatime
     DrawDynamicText(fpsText, FPS);
     DrawDynamicText(deltaTimeText, Math.round(1 / deltaTime));
+
+
+
 }
+
+function DrawRain()
+{
+    // Loop through rain array
+    for (var i = 0; i < rain.length; i++)
+    {
+        ctx.save();
+        // Rotate the rain to a random angle (given when created)
+        ctx.rotate(rain[i].angle* Math.PI/180);
+        // Paint it blue
+        ctx.fillStyle= "rgb(77, 125, 204)";
+        // Draw it on it's position
+        ctx.fillRect(rain[i].xPos,rain[i].yPos,2,20);
+        // Add the speed
+        rain[i].yPos += rain[i].speed;
+        // If it goes out of limit then replace it at a random xPos and at the top of the level
+        if(rain[i].yPos > 700)
+        {
+            rain[i].xPos = Math.random() * 1500;
+            rain[i].yPos = -300;
+        }
+        ctx.restore();
+    }
+}
+
+
 
 // Draws the world on debug
 function DrawWorld (world)
@@ -156,11 +190,6 @@ function DrawMenu ()
     for (var i = 0; i < menuButtons.length; i++)
         DrawButton(menuButtons[i]);
 
-
-    // if (!MouseCheck())
-    // {
-    //
-    // }
     ctx.drawImage(facebookImg, canvas.width * 0.01, canvas.height * 0.9, 50, 50);
     DrawText(userName);
 }

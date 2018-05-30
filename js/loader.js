@@ -2,7 +2,7 @@
 // Images references
 var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, doorImg, switchImg, flagImg, gemImg, padImg, greyImg, endFlagImg, facebookImg;
 // Sounds references
-var collectSound, bounceSound, deathSound, finishSound, jumpSound, switchSound, menuSound, checkpointSound;
+var collectSound, bounceSound, deathSound, finishSound, jumpSound, switchSound, menuSound, checkpointSound, rainSound;
 
 // Json Levels
 var jsonLevels = null;
@@ -18,6 +18,7 @@ function LoadSounds ()
     finishSound = new Sound("./media/sounds/finishSound.wav");
     menuSound = new Sound("./media/sounds/menuSound.wav");
     checkpointSound = new Sound("./media/sounds/checkpointSound.wav");
+    rainSound = new Sound("./media/sounds/rainSound.wav");
 }
 
 // Loads images from media/images

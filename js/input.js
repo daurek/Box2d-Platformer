@@ -142,43 +142,30 @@ function ButtonCheck()
             break;
         // We can only go back to the menu on help
         case states.onHelp:
-            if(MouseCheck(helpBackButton))
-            {
-                menuSound.play();
-                playerState = states.onMenu;
-            }
+            if(MouseCheck(helpBackButton)) GoToMenu(false);
             break;
         // We can only go back to the menu on scores
         case states.onScore:
-            if(MouseCheck(scoresBackButton))
-            {
-                menuSound.play();
-                playerState = states.onMenu;
-            }
+            if(MouseCheck(scoresBackButton)) GoToMenu(false);
             break;
+        // We can only go back to the menu on settings
         case states.onSettings:
-            if(MouseCheck(settingsBackButton))
-            {
-                menuSound.play();
-                playerState = states.onMenu;
-            }
+            if(MouseCheck(settingsBackButton)) GoToMenu(false);
             break;
         // We can only go back to the menu on pause (unless we press Escape)
         case states.onPause:
             if(MouseCheck(pauseToMenuButton))
             {
-                menuSound.play();
-                playerState = states.onMenu;
+                GoToMenu(true);
                 // Clear the level reseting it
                 ClearLevel ();
             }
             break;
-        // We can only go back to the menu on finish
+        // We can go back to the menu on finish or to the next level
         case states.onFinish:
             if(MouseCheck(finishToMenuButton))
             {
-                menuSound.play();
-                playerState = states.onMenu;
+                GoToMenu(true);
                 // Clear the level
                 ClearLevel ();
             }
@@ -189,12 +176,9 @@ function ButtonCheck()
                 playerState = states.onGame;
             }
             break;
+        // We can go back to the menu or select a level
         case states.onLevels:
-            if(MouseCheck(levelsBackButton))
-            {
-                menuSound.play();
-                playerState = states.onMenu;
-            }
+            if(MouseCheck(levelsBackButton)) GoToMenu(true);
 
             for (var i = 0; i < levelsButtons.length; i++)
             {
@@ -210,6 +194,14 @@ function ButtonCheck()
             break;
     }
 
+}
+
+// Got to menu and stop the rainsound if true
+function GoToMenu(soundStop)
+{
+    menuSound.play();
+    playerState = states.onMenu;
+    if(soundStop) rainSound.stop();
 }
 
 function MouseMove (event)

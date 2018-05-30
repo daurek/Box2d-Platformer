@@ -141,6 +141,8 @@ function Start ()
 
     // First call to the game loop
     Loop();
+
+
 }
 
 // Loads the game data and creates the level, resets evethings
@@ -155,6 +157,13 @@ function LoadGame ()
 
     // Starts countdown (timer to add to score later)
     StartTimer();
+
+    // Create Rain
+    for (var i = 0; i < rainDrops; i++)
+        rain.push( { xPos : Math.random() * 1500, yPos : (-Math.random()) * 600, speed: (Math.random()+1) * 15, angle: (Math.random()+1) * 13});
+
+    rainSound.play();
+
 }
 
 // Goes to the next level
@@ -201,6 +210,7 @@ function ClearLevel ()
     checkpoints = [];
     collectables= [];
     doors = [];
+    rain = [];
 
     // Reset variables
     player.score = 0;
