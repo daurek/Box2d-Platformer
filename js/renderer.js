@@ -299,7 +299,7 @@ function DrawScore ()
         // If the json file has at least a score saved
         if(count > 0)
         {
-            ctx.fillText("Rank -  Date - Score", canvas.width * 0.1, canvas.height * 0.1  );
+            ctx.fillText("Rank - Name -  Date - Score", canvas.width * 0.1, canvas.height * 0.1  );
             // Loop through every score until limit has been reached (7 because that's the space we have)
             for (var i = 0; i < count && i < 7; i++)
             {

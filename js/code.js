@@ -3,6 +3,7 @@
 // Input.js takes care of both Mouse and Keyboard input
 // Camera.js takes care of camera movement
 // Code.js takes care of game logic and loop
+// Facebook.js takes care of facebook Login
 
 // Canvas and context
 var canvas;

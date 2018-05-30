@@ -34,17 +34,17 @@ body {
 #name {
     color:white;
     font-size:16px;
-    float:left;
     display:inline;
+    float: left;
     font-family: CaviarDreams;
     background-color: black;
 }
 
-#github_link {
-    color: turquoise;
+#addblock {
+    color:white;
     font-size:16px;
-    font-weight: bolder;
-    float:right;
     display:inline;
-    font-family: CaviarDreams, sans-serif;
+    float: right;
+    font-family: CaviarDreams;
+    background-color: black;
 }
