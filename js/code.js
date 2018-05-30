@@ -136,6 +136,10 @@ function Start ()
     camera = new Camera(player);
     camera.Start();
 
+    // Create Rain
+    for (var i = 0; i < rainDrops; i++)
+        rain.push( { xPos : Math.random() * 1500, yPos : (-Math.random()) * 600, speed: (Math.random()+1) * 15, angle: (Math.random()+1) * 13});
+
     // Just for testing purposes (if the game is set to start on game then load everything)
     if (playerState == states.onGame) LoadGame();
 
@@ -158,10 +162,7 @@ function LoadGame ()
     // Starts countdown (timer to add to score later)
     StartTimer();
 
-    // Create Rain
-    for (var i = 0; i < rainDrops; i++)
-        rain.push( { xPos : Math.random() * 1500, yPos : (-Math.random()) * 600, speed: (Math.random()+1) * 15, angle: (Math.random()+1) * 13});
-
+    // Play rain sound
     rainSound.play();
 
 }
@@ -210,7 +211,6 @@ function ClearLevel ()
     checkpoints = [];
     collectables= [];
     doors = [];
-    rain = [];
 
     // Reset variables
     player.score = 0;
@@ -398,28 +398,4 @@ function CheckSecond(sec)
     if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
     if (sec < 0) {sec = "59"}; // go around to 59
     return sec; // return the second
-}
-
-// Loads, plays and stops a sound
-function Sound (src)
-{
-    // Loads sound
-    this.sound = document.createElement("audio");
-    this.sound.src = src;
-    this.sound.setAttribute("preload", "auto");
-    this.sound.setAttribute("controls", "none");
-    this.sound.style.display = "none";
-    document.body.appendChild(this.sound);
-
-    //this.sound.volume = soundVolume;
-    // Plays sound
-    this.play = function(){
-        this.sound.volume = soundVolume;
-        this.sound.play();
-    }
-
-    // Stops sound
-    this.stop = function(){
-        this.sound.pause();
-    }
 }

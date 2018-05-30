@@ -10,15 +10,15 @@ var jsonLevels = null;
 // Loads sounds from media/sound
 function LoadSounds ()
 {
-    collectSound = new Sound("./media/sounds/collectSound.wav");
-    bounceSound = new Sound("./media/sounds/bounceSound.wav");
-    jumpSound = new Sound("./media/sounds/jumpSound.wav");
-    deathSound = new Sound("./media/sounds/deathSound.wav");
-    switchSound = new Sound("./media/sounds/switchSound.wav");
-    finishSound = new Sound("./media/sounds/finishSound.wav");
-    menuSound = new Sound("./media/sounds/menuSound.wav");
-    checkpointSound = new Sound("./media/sounds/checkpointSound.wav");
-    rainSound = new Sound("./media/sounds/rainSound.wav");
+    collectSound = new Sound("./media/sounds/collectSound.wav", false);
+    bounceSound = new Sound("./media/sounds/bounceSound.wav", false);
+    jumpSound = new Sound("./media/sounds/jumpSound.wav", false);
+    deathSound = new Sound("./media/sounds/deathSound.wav", false);
+    switchSound = new Sound("./media/sounds/switchSound.wav", false);
+    finishSound = new Sound("./media/sounds/finishSound.wav", false);
+    menuSound = new Sound("./media/sounds/menuSound.wav", false);
+    checkpointSound = new Sound("./media/sounds/checkpointSound.wav", false);
+    rainSound = new Sound("./media/sounds/rainSound.mp3", true);
 }
 
 // Loads images from media/images
@@ -185,7 +185,7 @@ function CreateScore (newScore)
 
         // Create a score with the time and the provided new score
         var obj= {
-            time:  d.getHours() + ":" + d.getMinutes() + "  " + d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
+            time:  userName.name + " - " + d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
             score: newScore
         };
 
@@ -211,4 +211,29 @@ function LoadLevels()
         levelsButtons.push(button);
     }
 
+}
+
+// Loads, plays and stops a sound
+function Sound (src, loop)
+{
+    // Loads sound
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.loop = loop;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+
+    //this.sound.volume = soundVolume;
+    // Plays sound
+    this.play = function(){
+        this.sound.volume = soundVolume;
+        this.sound.play();
+    }
+
+    // Stops sound
+    this.stop = function(){
+        this.sound.pause();
+    }
 }
