@@ -1,7 +1,5 @@
 
 * {
-    /* margin: 0; */
-    /* padding: 0; */
     list-style: none;
     text-decoration:: none;
 }
@@ -10,15 +8,13 @@ body {
     background-color: black;
 }
 
-#container {
-    margin: 20px auto;
-    width: 1280px;
-
-    transform: translateY(25%);
-}
-
 #my_canvas {
     background-color: black;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 @font-face {
@@ -34,7 +30,7 @@ body {
 #name {
     color:white;
     font-size:16px;
-    display:inline;
+    display:block;
     float: left;
     font-family: CaviarDreams;
     background-color: black;
@@ -43,7 +39,7 @@ body {
 #addblock {
     color:white;
     font-size:16px;
-    display:inline;
+    display:block;
     float: right;
     font-family: CaviarDreams;
     background-color: black;

@@ -1,5 +1,6 @@
-// Facebook login
+/// Facebook.js takes care of facebook Login (copied from pdf and website)
 
+// If the user is logged on the game
 var loggedOn = false;
 
 function statusChangeCallback(response)

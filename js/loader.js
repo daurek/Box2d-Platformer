@@ -1,74 +1,95 @@
+/// Loads assets (images, sounds, json), creates the levels and saves scores
 
 // Images references
 var playerImg, floorImg, mountainImg, boxImg, bounceImg, ladderImg, spikesImg, doorImg, switchImg, flagImg, gemImg, padImg, greyImg, endFlagImg, facebookImg;
+
 // Sounds references
 var collectSound, bounceSound, deathSound, finishSound, jumpSound, switchSound, menuSound, checkpointSound, rainSound;
 
 // Json Levels
 var jsonLevels = null;
 
+// Scores file
+var jsonScoreFile = null;
+
 // Loads sounds from media/sound
 function LoadSounds ()
 {
-    collectSound = new Sound("./media/sounds/collectSound.wav", false);
-    bounceSound = new Sound("./media/sounds/bounceSound.wav", false);
-    jumpSound = new Sound("./media/sounds/jumpSound.wav", false);
-    deathSound = new Sound("./media/sounds/deathSound.wav", false);
-    switchSound = new Sound("./media/sounds/switchSound.wav", false);
-    finishSound = new Sound("./media/sounds/finishSound.wav", false);
-    menuSound = new Sound("./media/sounds/menuSound.wav", false);
-    checkpointSound = new Sound("./media/sounds/checkpointSound.wav", false);
-    rainSound = new Sound("./media/sounds/rainSound.mp3", true);
+    collectSound =      new Sound("./media/sounds/collectSound.wav",    false);
+    bounceSound =       new Sound("./media/sounds/bounceSound.wav",     false);
+    jumpSound =         new Sound("./media/sounds/jumpSound.wav",       false);
+    deathSound =        new Sound("./media/sounds/deathSound.wav",      false);
+    switchSound =       new Sound("./media/sounds/switchSound.wav",     false);
+    finishSound =       new Sound("./media/sounds/finishSound.wav",     false);
+    menuSound =         new Sound("./media/sounds/menuSound.wav",       false);
+    checkpointSound =   new Sound("./media/sounds/checkpointSound.wav", false);
+    rainSound =         new Sound("./media/sounds/rainSound.mp3",       true);
 }
 
 // Loads images from media/images
 function LoadImages ()
 {
     facebookImg = new Image();
-    facebookImg.src = "./media/images/facebook.png";
+    facebookImg.src =   "./media/images/facebook.png";
 
     floorImg = new Image();
-    floorImg.src = "./media/images/wall.png";
+    floorImg.src =      "./media/images/wall.png";
 
     mountainImg = new Image();
-    mountainImg.src = "./media/images/mountain.png";
+    mountainImg.src =   "./media/images/mountain.png";
 
     boxImg = new Image();
-    boxImg.src = "./media/images/box.png";
+    boxImg.src =        "./media/images/box.png";
 
     bounceImg = new Image();
-    bounceImg.src = "./media/images/bouncing.png";
+    bounceImg.src =     "./media/images/bouncing.png";
 
     ladderImg = new Image();
-    ladderImg.src = "./media/images/ladder.png";
+    ladderImg.src =     "./media/images/ladder.png";
 
     spikesImg = new Image();
-    spikesImg.src = "./media/images/spikes.png";
+    spikesImg.src =     "./media/images/spikes.png";
 
     doorImg = new Image();
-    doorImg.src = "./media/images/door.png";
+    doorImg.src =       "./media/images/door.png";
 
     switchImg = new Image();
-    switchImg.src = "./media/images/lever.png";
+    switchImg.src =     "./media/images/lever.png";
 
     flagImg = new Image();
-    flagImg.src = "./media/images/flag.png";
+    flagImg.src =       "./media/images/flag.png";
 
     gemImg = new Image();
-    gemImg.src = "./media/images/gem.png";
+    gemImg.src =        "./media/images/gem.png";
 
     padImg = new Image();
-    padImg.src = "./media/images/pad.png";
+    padImg.src =        "./media/images/pad.png";
 
     greyImg = new Image();
-    greyImg.src = "./media/images/grey.png";
+    greyImg.src =       "./media/images/grey.png";
 
     endFlagImg = new Image();
-    endFlagImg.src = "./media/images/endFlag.png";
+    endFlagImg.src =    "./media/images/endFlag.png";
 
     playerImg = new Image();
-    playerImg.src = "./media/images/player_spritesheet.png";
+    playerImg.src =     "./media/images/player_spritesheet.png";
 
+
+}
+
+// Loads levels from json
+function LoadLevels()
+{
+    // Load levels json
+    jsonLevels = JSON.parse(JSON.stringify(levels));
+    levelCount = jsonLevels.length;
+
+    // Create Levels buttons and add them to the array
+    for (var i = 1; i <= levelCount; i++)
+    {
+        var button = { name: i, xPos:  i/10, yPos:  0.1, xSize: 75, ySize: 40, px: 50, color: "white", font: "Roboto-Light"};
+        levelsButtons.push(button);
+    }
 
 }
 
@@ -169,48 +190,38 @@ function ParseJSON (levelNumber)
 function CreateScore (newScore)
 {
     // If the json is null
-    if(jsonFileScore == null)
+    if(jsonScoreFile == null)
     {
-        // Get the file
-        var string = JSON.stringify(score);
-        // Parses that string
-        jsonFileScore = JSON.parse(string);
+        // Get file and parses it
+        jsonScoreFile = JSON.parse(JSON.stringify(score));
     }
 
     // If it has loaded correctly
-    if(jsonFileScore != null)
+    if(jsonScoreFile != null)
     {
         // Get Date (using it to note down the time in which the player completed the level)
         var d = new Date();
 
-        // Create a score with the time and the provided new score
+        // Create a score with the user name (facebook), the time and the provided new score
         var obj= {
-            time:  userName.name + " - " + d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
+            name: userName.name,
+            time: d.getDate() + "/" + d.getMonth() + "/" +  d.getFullYear(),
             score: newScore
         };
 
         // Push it into the json object
-        jsonFileScore.push(obj);
+        jsonScoreFile.push(obj);
 
         // Pushes the json object into the file
-        localStorage.setItem('score', JSON.stringify(jsonFileScore));
-
+        localStorage.setItem('score', JSON.stringify(jsonScoreFile));
     }
 }
 
-function LoadLevels()
+// Clears the score file
+function ClearScores()
 {
-    // Load levels json
-    jsonLevels = JSON.parse(JSON.stringify(levels));
-    levelCount = jsonLevels.length;
-
-    // Create Levels buttons
-    for (var i = 1; i <= levelCount; i++)
-    {
-        var button = { name: i, xPos:  i/10, yPos:  0.1, xSize: 65, ySize: 30, px: 30, color: "white", font: "Roboto-Light"};
-        levelsButtons.push(button);
-    }
-
+    jsonScoreFile = null;
+    localStorage.setItem('score', jsonScoreFile);
 }
 
 // Loads, plays and stops a sound
@@ -218,15 +229,16 @@ function Sound (src, loop)
 {
     // Loads sound
     this.sound = document.createElement("audio");
+    // Sets source path
     this.sound.src = src;
+    // Sets loop status
     this.sound.loop = loop;
     this.sound.setAttribute("preload", "auto");
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
 
-    //this.sound.volume = soundVolume;
-    // Plays sound
+    // Plays sound at the requested volume
     this.play = function(){
         this.sound.volume = soundVolume;
         this.sound.play();

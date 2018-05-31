@@ -1,6 +1,6 @@
-// Only removed vertical displacement on this file (not needed since I wanted to see the whole level)
-// Camera parameters
+/// Camera.js takes care of camera movement
 
+// Camera parameters
 var defaultScrollingSpeed = 5;
 var value = defaultScrollingSpeed;
 
@@ -22,17 +22,18 @@ Camera.prototype.Start = function ()
 
 Camera.prototype.Update = function (deltaTime)
 {
-    // this camera follows the player's position
-
+    // Not on game then go back and forth
     if(playerState != states.onGame)
     {
             this.player.position.x += value;
             this.position.x = this.player.position.x - canvas.width *.5;
 
+            // Clamped values
             if (this.position.x >= this.maxX + 750) value = -defaultScrollingSpeed;
             else if(this.position.x <= this.minX) value = defaultScrollingSpeed;
 
     }
+    // onGame follow the player's position
     else
     {
         this.position.x = this.player.position.x - canvas.width *.5;

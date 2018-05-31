@@ -1,4 +1,5 @@
-// Only changed MouseDown so it can press buttons and added MouseCheck to check if mouse is over buttons
+/// Input.js takes care of both Mouse and Keyboard input (transition between sections)
+
 // key events
 var lastPress = null;
 
@@ -83,19 +84,20 @@ function MouseDown (event)
     var clickX = event.clientX - rect.left;
     var clickY = event.clientY - rect.top;
     //console.log("MouseDown: " + "X=" + clickX + ", Y=" + clickY);
+    // Check what the user clicked
     ButtonCheck();
-
 }
 
+// Check which button has been pressed
 function ButtonCheck()
 {
-    // Depending on the player state
+    // Depending on the player state we check every button available
     switch (playerState)
     {
-        // On menu we have 3 buttons
+        // On menu we have multiple buttons
         case states.onMenu:
             // Play
-            if (MouseCheck(playButton))//canvas.width * 0.45, canvas.height * 0.5, 100, 30))
+            if (MouseCheck(playButton))
             {
                 // We always play the menusound on press
                 menuSound.play();
@@ -103,7 +105,7 @@ function ButtonCheck()
                 playerState = states.onGame;
                 LoadGame();
             }
-            // Help
+            // Levels
             else if (MouseCheck(levelsButton))
             {
                 menuSound.play();
@@ -121,21 +123,21 @@ function ButtonCheck()
             else if(MouseCheck(scoresButton))
             {
                 menuSound.play();
-                // Clear json file to reload it just after and go to check the scores
-                jsonScoreFile = null;
+                // go to score section
                 playerState = states.onScore;
-
             }
+            // Settings
             else if(MouseCheck(settingsButton))
             {
                 menuSound.play();
                 // go to settings section
                 playerState = states.onSettings;
             }
+            // Facebook
             else if(MouseCheck(facebookButton))
             {
                 menuSound.play();
-                // open facebook login window
+                // open facebook login window or close it
                 if(!loggedOn) FB.login(statusChangeCallback, {scope: 'email,public_profile', return_scopes: true});
                 else CloseFacebook();
             }
@@ -144,13 +146,15 @@ function ButtonCheck()
         case states.onHelp:
             if(MouseCheck(helpBackButton)) GoToMenu(false);
             break;
-        // We can only go back to the menu on scores
+        // We can go back to the menu or clear scores
         case states.onScore:
             if(MouseCheck(scoresBackButton)) GoToMenu(false);
+            else if(MouseCheck(clearScoresButton)) ClearScores();
             break;
-        // We can only go back to the menu on settings
+        // We can go back to the menu or set to fullscreen on settings
         case states.onSettings:
             if(MouseCheck(settingsBackButton)) GoToMenu(false);
+            else if(MouseCheck(fullscreenButton)) SetFullscreen();
             break;
         // We can only go back to the menu on pause (unless we press Escape)
         case states.onPause:
@@ -180,8 +184,10 @@ function ButtonCheck()
         case states.onLevels:
             if(MouseCheck(levelsBackButton)) GoToMenu(true);
 
+            // Check if a level has been selected
             for (var i = 0; i < levelsButtons.length; i++)
             {
+                // If it has then load it up
                 if (MouseCheck(levelsButtons[i]))
                 {
                     currentLevel = i+1;
@@ -193,10 +199,9 @@ function ButtonCheck()
         default:
             break;
     }
-
 }
 
-// Got to menu and stop the rainsound if true
+// Go to menu and stop the rainsound if true
 function GoToMenu(soundStop)
 {
     menuSound.play();
@@ -214,13 +219,16 @@ function MouseMove (event)
 // Returns true if the mouse position is inside the provided boundaries
 function MouseCheck(button)
 {
-    return input.mouse.x > canvas.width * button.xPos && input.mouse.x  < canvas.width * button.xPos + button.xSize && input.mouse.y > canvas.height * button.yPos - button.ySize && input.mouse.y  < canvas.height * button.yPos;
+    // centered buttons
+    return input.mouse.x > canvas.width * button.xPos - button.xSize/2 && input.mouse.x  < canvas.width * button.xPos + button.xSize/2 && input.mouse.y > canvas.height * button.yPos - button.ySize && input.mouse.y  < canvas.height * button.yPos;
 }
 
 function MouseWheel(event)
 {
+    // If the player is on settings
     if (playerState == states.onSettings)
-     {
+    {
+        // Depending on the wheel direction lower or increase volume while clamping it
         if (event.deltaY > 0)
             if (soundVolume > 0.01) soundVolume -= 0.01;
             else soundVolume = 0;
@@ -230,5 +238,4 @@ function MouseWheel(event)
 
         menuSound.play();
     }
-
 }

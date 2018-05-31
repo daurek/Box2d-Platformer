@@ -1,9 +1,4 @@
-// Loader.js loads assets (images, sounds, json) and creates the levels
-// Renderer.js draws everything (images, text)
-// Input.js takes care of both Mouse and Keyboard input
-// Camera.js takes care of camera movement
-// Code.js takes care of game logic and loop
-// Facebook.js takes care of facebook Login
+/// Code.js takes care of game logic and loop
 
 // Canvas and context
 var canvas;
@@ -11,6 +6,7 @@ var ctx;
 // PI value
 var pi_2 = Math.PI * 2;
 
+// Deltatime
 var fixedDeltaTime = 0.01666666; // 60fps: 1 frame each 16.66666ms
 var deltaTime = fixedDeltaTime;
 
@@ -19,6 +15,29 @@ var time = 0,
     FPS  = 0,
     frames    = 0,
     acumDelta = 0;
+
+// Game states
+var states = {
+    // Menu section (he can play, go to help or check the scores)
+    onMenu: 0,
+    // Help section (check what each item does)
+    onHelp: 1,
+    // Score section (check the highest scores, saved on json)
+    onScore: 2,
+    // Settings section
+    onSettings: 3,
+    // Pause, only during game, stops time, go to menu
+    onPause: 4,
+    // Playing section, can pause with Esc and reset with R
+    onGame: 5,
+    // Finish section that shows score and goes to menu
+    onFinish: 6,
+    // Levels section
+    onLevels: 7
+};
+
+// Player state (initial player state set to menu)
+var playerState = states.onMenu;
 
 // Sound volume
 var soundVolume = 0.1;
@@ -47,41 +66,15 @@ var timer = 03 + ":" + 00;
 // Player gems + remaining time in seconds, this score goes to score.json when the level is finished
 var finalScore;
 
-// Game states
-var states = {
-    // Menu section (he can play, go to help or check the scores)
-    onMenu: 0,
-    // Help section (check what each item does)
-    onHelp: 1,
-    // Score section (check the highest scores, saved on json)
-    onScore: 2,
-    // Settings section
-    onSettings: 3,
-    // Pause, only during game, stops time, go to menu
-    onPause: 4,
-    // Playing section, can pause with Esc and reset with R
-    onGame: 5,
-    // Finish section that shows score and goes to menu
-    onFinish: 6,
-    // Levels section
-    onLevels: 7
-};
-
+// current game level
 var currentLevel = 1;
+
+// Number of levels on the game
 var levelCount;
-
-// Scores file
-var jsonScoreFile = null;
-
-// Player state (initial player state set to menu)
-var playerState = states.onMenu;
-
-var jsonFileScore = null;
 
 // Sets refresh, gets canvas and context, loads media
 function Init ()
 {
-
     // Screen refresh
     window.requestAnimationFrame = (function (evt) {
         return window.requestAnimationFrame ||
@@ -107,14 +100,19 @@ function Init ()
         LoadImages ();
         // When the player image loads start the game
         playerImg.onload = Start();
+    }
 
+    // Set canvas size depending on window size
+    if (window.innerWidth > 1320 && window.innerHeight > 700)
+    {
+        canvas.width = window.innerWidth - 30;
+        canvas.height = window.innerHeight - 100;
     }
 }
 
-// Start
+// Sets up input events, physics, loads levels, initializes initial gameobjects and starts the loop
 function Start ()
 {
-
     // Setup keyboard events
     SetupKeyboardEvents();
 
@@ -139,21 +137,18 @@ function Start ()
 
     // Create Rain
     for (var i = 0; i < rainDrops; i++)
-        rain.push( { xPos : Math.random() * 1500, yPos : (-Math.random()) * 600, speed: (Math.random()+1) * 15, angle: (Math.random()+1) * 13});
+        rain.push( { xPos : Math.random() * canvas.width , yPos : (-Math.random()) * 600, speed: (Math.random()+1) * 15, angle: (Math.random()+1) * 13});
 
     // Just for testing purposes (if the game is set to start on game then load everything)
     if (playerState == states.onGame) LoadGame();
 
     // First call to the game loop
     Loop();
-
-
 }
 
 // Loads the game data and creates the level, resets evethings
 function LoadGame ()
 {
-
     // Parses JSON to get data and build level
     ParseJSON(currentLevel);
 
@@ -165,7 +160,6 @@ function LoadGame ()
 
     // Play rain sound
     rainSound.play();
-
 }
 
 // Goes to the next level
@@ -191,36 +185,22 @@ function Reset ()
 function ClearLevel ()
 {
     // Destroy bodies
-    for (var i = 0; i < platforms.length; i++) {
-        world.DestroyBody(platforms[i].body);
-    }
-
-    for (var i = 0; i < checkpoints.length; i++) {
-        world.DestroyBody(checkpoints[i].body);
-    }
-
-    for (var i = 0; i < collectables.length; i++) {
-        world.DestroyBody(collectables[i].body);
-    }
-
-    for (var i = 0; i < doors.length; i++) {
-        world.DestroyBody(doors[i].body);
-    }
+    for (var i = 0; i < platforms.length;       i++)    world.DestroyBody(platforms[i].body);
+    for (var i = 0; i < checkpoints.length;     i++)    world.DestroyBody(checkpoints[i].body);
+    for (var i = 0; i < collectables.length;    i++)    world.DestroyBody(collectables[i].body);
+    for (var i = 0; i < doors.length;           i++)    world.DestroyBody(doors[i].body);
 
     // Clear arrays
-    platforms = [];
-    checkpoints = [];
-    collectables= [];
-    doors = [];
+    platforms =     [];
+    checkpoints =   [];
+    collectables =  [];
+    doors =         [];
 
     // Reset variables
     player.score = 0;
     timer = 03 + ":" + 00;
-
     player.position.x = 1000;
     player.position.y = 0;
-
-
 }
 
 // Game Loop
@@ -229,6 +209,7 @@ function Loop ()
     // Refreshes frames
     requestAnimationFrame(Loop);
 
+    // Get date to get deltatime
     var now = Date.now();
     deltaTime = now - time;
     if (deltaTime > 1000) // si el tiempo es mayor a 1 seg: se descarta
@@ -268,9 +249,11 @@ function Update ()
     switch (playerState)
     {
         case states.onPause:
+        // Only check if the player unpauses
             CheckPause ();
             break;
         case states.onGame:
+        // Update game loop
             UpdateGame ();
             break;
         default:
@@ -288,6 +271,8 @@ function UpdateGame ()
     // Step(timestep , velocity iterations, position iterations)
     world.Step(deltaTime, 8, 3);
     world.ClearForces();
+
+    // If the player is shooting (only tested shooting, not integrated to game)
     if (!player.isShooting)
     {
         // player input logic
@@ -302,10 +287,13 @@ function UpdateGame ()
             player.Jump();
     }
 
-
     // Shooting key
     if (input.isKeyPressed(KEY_Q))
-        player.Shoot();
+    {
+        CreateScore (100);
+        playerState = states.onFinish;
+    }
+        //player.Shoot();
 
     // Reset game key
     if (input.isKeyPressed(KEY_R))
@@ -366,7 +354,7 @@ function UpdateLevel ()
 }
 
 // Timer that calls itself (countdown)
-function StartTimer()
+function StartTimer ()
 {
     // If the game is on pause then recall the timer and return
     if(playerState == states.onPause)
@@ -394,9 +382,19 @@ function StartTimer()
 }
 
 // Return formated second
-function CheckSecond(sec)
+function CheckSecond (sec)
 {
     if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
     if (sec < 0) {sec = "59"}; // go around to 59
     return sec; // return the second
+}
+
+// Toggle Fullscreen
+function SetFullscreen ()
+{
+    // fullscreen is standard, moz is for Firefox, webkit is for Chrome and Opera
+    // Checking through all the available explorers for each needed function (Firefox doesnt scale correctly, mouse input is not correct)
+    if (canvas.requestFullScreen) canvas.requestFullScreen();
+    else if (canvas.mozRequestFullScreen) canvas.mozRequestFullScreen();
+    else if (canvas.webkitRequestFullScreen) canvas.webkitRequestFullScreen(canvas.ALLOW_KEYBOARD_INPUT);
 }
