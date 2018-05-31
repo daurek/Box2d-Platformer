@@ -39,9 +39,6 @@ var states = {
 // Player state (initial player state set to menu)
 var playerState = states.onMenu;
 
-// Sound volume
-var soundVolume = 0.1;
-
 // Game Camera
 var camera;
 
@@ -158,8 +155,13 @@ function LoadGame ()
     // Starts countdown (timer to add to score later)
     StartTimer();
 
+    // Reset sound variables
+    currentPlaybackRate = 1.0;
+    soundVolume = defaultSoundVolume;
+
     // Play rain sound
     rainSound.play();
+
 }
 
 // Goes to the next level
@@ -366,6 +368,23 @@ function StartTimer ()
     var s = CheckSecond((timeArray[1] - 1));
     // substract a minute if its 59 seconds
     if(s==59){m-=1}
+
+    // Every minute we try to speed and increase the rains sound impact on the player
+    if(m < 3 && s < 5 && currentPlaybackRate < 1.5)
+    {
+        currentPlaybackRate = 1.5;
+        if(soundVolume <= soundVolume + 0.2) soundVolume = soundVolume + 0.2;
+        rainSound.stop();
+        rainSound.play();
+    }
+    else if(m < 2 && s < 5 && currentPlaybackRate < 2.0)
+    {
+        currentPlaybackRate = 2.0;
+        if(soundVolume <= soundVolume + 0.2) soundVolume = soundVolume + 0.2;
+        rainSound.stop();
+        rainSound.play();
+    }
+
     // stop the timer when its finished
     if(m<0) return;
     // Update timer string

@@ -12,6 +12,15 @@ var jsonLevels = null;
 // Scores file
 var jsonScoreFile = null;
 
+// default playbackrate
+var currentPlaybackRate = 1.0;
+
+// default sound soundVolume
+var defaultSoundVolume = 0.2;
+
+// Sound volume
+var soundVolume = defaultSoundVolume;
+
 // Loads sounds from media/sound
 function LoadSounds ()
 {
@@ -233,13 +242,15 @@ function Sound (src, loop)
     this.sound.src = src;
     // Sets loop status
     this.sound.loop = loop;
+
     this.sound.setAttribute("preload", "auto");
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
 
-    // Plays sound at the requested volume
+    // Plays sound at the requested volume and playback rate
     this.play = function(){
+        this.sound.playbackRate = currentPlaybackRate;
         this.sound.volume = soundVolume;
         this.sound.play();
     }
