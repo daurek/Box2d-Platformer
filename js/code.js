@@ -289,16 +289,10 @@ function UpdateGame ()
     }
 
     // Shooting key
-    if (input.isKeyPressed(KEY_Q))
-    {
-        CreateScore (100);
-        playerState = states.onFinish;
-    }
-        //player.Shoot();
+    if (input.isKeyPressed(KEY_Q)) player.Shoot();
 
     // Reset game key
-    if (input.isKeyPressed(KEY_R))
-        Reset();
+    if (input.isKeyPressed(KEY_R)) Reset();
 
     // player update
     player.Update(deltaTime);
