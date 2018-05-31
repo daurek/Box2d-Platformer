@@ -167,6 +167,7 @@ function NextLevel()
 {
     ClearLevel();
     currentLevel++;
+    playerState = states.onGame;
     LoadGame();
 }
 
@@ -375,7 +376,7 @@ function StartTimer ()
     if(m<0) return;
     // Update timer string
     timer = m + ":" + s;
-    // If the game is on game (to delete timers when out of game))
+    // If the player is on game (to delete timers when out of game))
     if(playerState == states.onGame)
     // Recall timer in a second
     setTimeout(StartTimer, 1000);
