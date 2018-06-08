@@ -37,7 +37,7 @@ var states = {
 };
 
 // Player state (initial player state set to menu)
-var playerState = states.onMenu;
+var playerState = states.onGame;
 
 // Game Camera
 var camera;
@@ -64,7 +64,7 @@ var timer = 03 + ":" + 00;
 var finalScore;
 
 // current game level
-var currentLevel = 1;
+var currentLevel = 2;
 
 // Number of levels on the game
 var levelCount;
@@ -72,6 +72,9 @@ var levelCount;
 // Sets refresh, gets canvas and context, loads media
 function Init ()
 {
+    // Rescale event
+    window.onresize = Rescale;
+
     // Screen refresh
     window.requestAnimationFrame = (function (evt) {
         return window.requestAnimationFrame ||
@@ -99,13 +102,9 @@ function Init ()
         playerImg.onload = Start();
     }
 
-    // Set canvas size depending on window size
-    if (window.innerWidth > 1320 && window.innerHeight > 700)
-    {
-        canvas.width = window.innerWidth - 30;
-        canvas.height = window.innerHeight - 100;
-    }
+    Rescale ();
 }
+
 
 // Sets up input events, physics, loads levels, initializes initial gameobjects and starts the loop
 function Start ()
@@ -411,4 +410,14 @@ function SetFullscreen ()
     if (canvas.requestFullScreen) canvas.requestFullScreen();
     else if (canvas.mozRequestFullScreen) canvas.mozRequestFullScreen();
     else if (canvas.webkitRequestFullScreen) canvas.webkitRequestFullScreen(canvas.ALLOW_KEYBOARD_INPUT);
+}
+
+// Set canvas size depending on window size
+function Rescale ()
+{
+    if (window.innerWidth > 1320 && window.innerHeight > 700)
+    {
+        canvas.width = window.innerWidth - 30;
+        canvas.height = window.innerHeight - 100;
+    }
 }
