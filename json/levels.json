@@ -102,9 +102,45 @@ levels = [
         [
             {"type": "playerSpawn", "x": 70,  "y": 80},
 
-            {"type": "checkpoint", "x": 100,  "y": 278, "width": 0.25, "height": 0.4},
-            {"type": "floor", "x": 100,  "y": 230, "width": 1, "height": 0.5},
-            {"type": "floor", "x": 100,  "y": 230, "width": 1, "height": 0.05}
+            {"type": "floor", "x": 110,  "y": 185, "width": 1.35, "height": 0.05},
+            {"type": "floor", "x": 210,  "y": 425, "width": 2, "height": 0.05},
+            {"type": "floor", "x": 400,  "y": 185, "width": 1, "height": 0.05},
+            {"type": "floor", "x": 600,  "y": 185, "width": 1, "height": 0.05},
+            {"type": "floor", "x": 370,  "y": 270, "width": 2, "height": 0.05},
+            {"type": "floor", "x": 405,  "y": 305, "width": 0.3, "height": 0.05},
+            {"type": "floor", "x": 290,  "y": 305, "width": 0.3, "height": 0.05},
+
+            {"type": "wall", "x": 1050,  "y": 23.5, "width": 10.5, "height": 0.24, "friction": 1},
+            {"type": "wall", "x": 1050,  "y": 750, "width": 10.5, "height": 0.1},
+            {"type": "wall", "x": 0,  "y": 390, "width": 0.1, "height": 3.5},
+            {"type": "wall", "x": 2085,  "y": 390, "width": 0.1, "height": 3.5},
+
+            {"type": "block", "x": 500,  "y": 120, "width": 0.1, "height": 0.7},
+            {"type": "block", "x": 560,  "y": 340, "width": 0.1, "height": 0.7},
+            {"type": "block", "x": 560,  "y": 480, "width": 0.1, "height": 0.7},
+            {"type": "block", "x": 560,  "y": 600, "width": 0.1, "height": 0.7},
+            {"type": "block", "x": 560,  "y": 680, "width": 0.1, "height": 0.7},
+
+            {"type": "spikes", "x": 400,  "y": 285, "width": 1.5, "height": 0.15},
+            {"type": "spikes", "x": 800,  "y": 60, "width": 1, "height": 0.15},
+            {"type": "spikes", "x": 1000,  "y": 60, "width": 1, "height": 0.15},
+            {"type": "spikes", "x": 1200,  "y": 60, "width": 1, "height": 0.15},
+            {"type": "spikes", "x": 1400,  "y": 60, "width": 1, "height": 0.15},
+            {"type": "spikes", "x": 1600,  "y": 60, "width": 1, "height": 0.15},
+            {"type": "spikes", "x": 1800,  "y": 60, "width": 1, "height": 0.15},
+            {"type": "spikes", "x": 2000,  "y": 60, "width": 1, "height": 0.15},
+
+            {"type": "bounce", "x": 250,  "y": 75, "width": 1, "height": 0.05},
+            {"type": "bounce", "x": 520,  "y": 305, "width": 0.3, "height": 0.05},
+
+            {"type": "box", "x": 50,  "y": 450, "width": 0.3, "height": 0.3},
+
+            {"type": "ladder", "x": 25,  "y": 290, "width": 0.15, "height": 0.5},
+
+            {"type": "switch", "x": 450,  "y": 72, "width": 0.25, "height": 0.25, "id": 1},
+            {"type": "door", "x": 230,  "y": 230, "width": 0.1, "height": 0.4, "id": 1},
+
+            {"type": "endPoint", "x": 2035,  "y": 150, "width": 0.25, "height": 0.4},
         ]
     }
 ]

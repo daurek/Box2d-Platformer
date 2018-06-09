@@ -37,7 +37,7 @@ var states = {
 };
 
 // Player state (initial player state set to menu)
-var playerState = states.onGame;
+var playerState = states.onMenu;
 
 // Game Camera
 var camera;
@@ -64,7 +64,7 @@ var timer = 03 + ":" + 00;
 var finalScore;
 
 // current game level
-var currentLevel = 2;
+var currentLevel = 1;
 
 // Number of levels on the game
 var levelCount;
@@ -72,7 +72,12 @@ var levelCount;
 // Sets refresh, gets canvas and context, loads media
 function Init ()
 {
-    // Rescale event
+    // Add event to pause the game if the player changes tab or window
+    document.addEventListener( 'visibilitychange' , function() {
+    if (document.hidden && playerState == states.onGame) playerState = states.onPause;
+    }, false );
+
+    // Rescale event to reescale the canvas when the user changes the window size
     window.onresize = Rescale;
 
     // Screen refresh
@@ -103,8 +108,9 @@ function Init ()
     }
 
     Rescale ();
-}
 
+
+}
 
 // Sets up input events, physics, loads levels, initializes initial gameobjects and starts the loop
 function Start ()
@@ -242,6 +248,7 @@ function Loop ()
 
     // Reset input data
     input.postUpdate();
+
 }
 
 // Game Update
@@ -309,11 +316,14 @@ function UpdateGame ()
 function CheckPause ()
 {
     // Toggles pause on press
-    if (input.isKeyDown(KEY_ESCAPE))
-    {
-       if (playerState == states.onGame) playerState = states.onPause;
-       else playerState = states.onGame;
-    }
+    if (input.isKeyDown(KEY_ESCAPE)) Pause();
+}
+
+// Pause the game
+function Pause()
+{
+    if (playerState == states.onGame) playerState = states.onPause;
+    else playerState = states.onGame;
 }
 
 // Checks if an object has to be deleted or cleared
